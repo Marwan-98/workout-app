@@ -1,4 +1,5 @@
 import BrowserWorkout from "../components/BrowserWorkout";
+
 import Layout from "../components/layout";
 
 const BrowsWorkout = () => {
@@ -14,6 +15,7 @@ const BrowsWorkout = () => {
               Thoughtfully designed exercises meant to push you to the absolute
               limits
             </p>
+
           </div>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
             {/* Replace with your content */}

@@ -12,6 +12,7 @@ const Calendar = () => {
             <div className="py-4">
               <h3 className="text-3xl font-extrabold">Workout History</h3>
             </div>
+
             <div className="grid grid-cols-2">
               <div>
                 <div className="py-4 columns-2 ">
