@@ -4,7 +4,7 @@ import Layout from "../components/layout";
 const Calendar = () => {
   return (
     <>
-      <Layout>
+      <Layout element={"Calendar"}>
         <div className="py-6">
           <div className="px-4 sm:px-6 md:px-0"></div>
           <div className="px-4 sm:px-6 md:px-0">
