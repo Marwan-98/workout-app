@@ -1,284 +1,62 @@
-import { Fragment, useState } from "react";
-import { Dialog, Menu, Transition } from "@headlessui/react";
-import {
-  Bars3BottomLeftIcon,
-  CalendarIcon,
-  ChartBarIcon,
-  HomeIcon,
-  XMarkIcon,
-  BoltIcon,
-} from "@heroicons/react/24/outline";
 import DateCalendar from "../components/dateCalendar";
-
-const navigation = [
-  { name: "Dashboard", href: "#", icon: HomeIcon, current: true },
-  { name: "Browse Workouts", href: "#", icon: BoltIcon, current: false },
-  { name: "Calendar", href: "#", icon: CalendarIcon, current: false },
-  { name: "Progress", href: "#", icon: ChartBarIcon, current: false },
-];
-const userNavigation = [
-  { name: "Your Profile", href: "#" },
-  { name: "Settings", href: "#" },
-  { name: "Sign out", href: "#" },
-];
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
+import Layout from "../components/layout";
 
 const Calendar = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   return (
-    <div>
-      <Transition.Root show={sidebarOpen} as={Fragment}>
-        <Dialog
-          as="div"
-          className="relative z-40 md:hidden"
-          onClose={setSidebarOpen}
-        >
-          <Transition.Child
-            as={Fragment}
-            enter="transition-opacity ease-linear duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="transition-opacity ease-linear duration-300"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-gray-600 bg-opacity-75" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 z-40 flex">
-            <Transition.Child
-              as={Fragment}
-              enter="transition ease-in-out duration-300 transform"
-              enterFrom="-translate-x-full"
-              enterTo="translate-x-0"
-              leave="transition ease-in-out duration-300 transform"
-              leaveFrom="translate-x-0"
-              leaveTo="-translate-x-full"
-            >
-              <Dialog.Panel className="relative flex w-full max-w-xs flex-1 flex-col bg-white pt-5 pb-4">
-                <Transition.Child
-                  as={Fragment}
-                  enter="ease-in-out duration-300"
-                  enterFrom="opacity-0"
-                  enterTo="opacity-100"
-                  leave="ease-in-out duration-300"
-                  leaveFrom="opacity-100"
-                  leaveTo="opacity-0"
-                >
-                  <div className="absolute top-0 right-0 -mr-12 pt-2">
-                    <button
-                      type="button"
-                      className="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-                      onClick={() => setSidebarOpen(false)}
-                    >
-                      <span className="sr-only">Close sidebar</span>
-                      <XMarkIcon
-                        className="h-6 w-6 text-white"
-                        aria-hidden="true"
-                      />
-                    </button>
-                  </div>
-                </Transition.Child>
-                <div className="flex flex-shrink-0 items-center px-4">
-                  <img
-                    className="h-8 w-auto"
-                    src="./assets/logo-4.png"
-                    alt="Your Company"
-                  />
-                </div>
-                <div className="mt-5 h-0 flex-1 overflow-y-auto">
-                  <nav className="space-y-1 px-2">
-                    {navigation.map((item) => (
-                      <a
-                        key={item.name}
-                        href={item.href}
-                        className={classNames(
-                          item.current
-                            ? "bg-gray-100 text-gray-900"
-                            : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-                          "group rounded-md py-2 px-2 flex items-center text-base font-medium"
-                        )}
-                      >
-                        <item.icon
-                          className={classNames(
-                            item.current
-                              ? "text-gray-500"
-                              : "text-gray-400 group-hover:text-gray-500",
-                            "mr-4 flex-shrink-0 h-6 w-6"
-                          )}
-                          aria-hidden="true"
-                        />
-                        {item.name}
-                      </a>
-                    ))}
-                  </nav>
-                </div>
-              </Dialog.Panel>
-            </Transition.Child>
-            <div className="w-14 flex-shrink-0">
-              {/* Dummy element to force sidebar to shrink to fit close icon */}
+    <>
+      <Layout>
+        <div className="py-6">
+          <div className="px-4 sm:px-6 md:px-0"></div>
+          <div className="px-4 sm:px-6 md:px-0">
+            {/* Replace with your content */}
+            <div className="py-4">
+              <h3 className="text-3xl font-extrabold">Workout History</h3>
             </div>
-          </div>
-        </Dialog>
-      </Transition.Root>
-
-      {/* Static sidebar for desktop */}
-      <div className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
-        {/* Sidebar component, swap this element with another sidebar if you like */}
-        <div className="flex flex-grow flex-col overflow-y-auto border-r border-gray-200 bg-white pt-5">
-          <div className="flex flex-shrink-0 items-center px-4">
-            <img
-              className="h-8 w-auto"
-              src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-              alt="Your Company"
-            />
-          </div>
-          <div className="mt-5 flex flex-grow flex-col">
-            <nav className="flex-1 space-y-1 px-2 pb-4">
-              {navigation.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className={classNames(
-                    item.current
-                      ? "bg-gray-100 text-gray-900"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-                    "group rounded-md py-2 px-2 flex items-center text-sm font-medium"
-                  )}
-                >
-                  <item.icon
-                    className={classNames(
-                      item.current
-                        ? "text-gray-500"
-                        : "text-gray-400 group-hover:text-gray-500",
-                      "mr-3 flex-shrink-0 h-6 w-6"
-                    )}
-                    aria-hidden="true"
-                  />
-                  {item.name}
-                </a>
-              ))}
-            </nav>
-          </div>
-        </div>
-      </div>
-
-      <div className="md:pl-64">
-        <div className="mx-auto flex max-w-5xl flex-col  md:px-8 xl:px-0">
-          <div className="sticky top-0 z-10 flex h-16 flex-shrink-0 bg-white">
-            <button
-              type="button"
-              className="border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
-              onClick={() => setSidebarOpen(true)}
-            >
-              <span className="sr-only">Open sidebar</span>
-              <Bars3BottomLeftIcon className="h-6 w-6" aria-hidden="true" />
-            </button>
-            <div className="flex flex-1 justify-end px-4 md:px-0">
-              <div className="ml-4 flex items-center md:ml-6">
-                {/* Profile dropdown */}
-                <Menu as="div" className="relative ml-3">
+            <div className="grid grid-cols-2">
+              <div>
+                <div className="py-4 columns-2 ">
                   <div>
-                    <Menu.Button className="flex max-w-xs items-center rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                      <span className="sr-only">Open user menu</span>
-                      <span className="text-base mx-4">John Doe</span>
+                    <h4 className="font-bold">Workout</h4>
+                    <p>Cardio Day</p>
+                  </div>
+                  <div>
+                    <h4 className="font-bold">Date</h4>
+                    <p>January 14, 2021</p>
+                  </div>
+                </div>
+                <div className="">
+                  <div className="flex justify-start">
+                    <div className="flex flex-col grow md:flex-row md:max-w-xl rounded-lg bg-white shadow-lg">
                       <img
-                        className="h-8 w-8 rounded-full"
-                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                        className=" w-full h-96 md:h-auto object-cover md:w-48 rounded-t-lg md:rounded-none md:rounded-l-lg"
+                        src="https://images.unsplash.com/photo-1506704563811-e81bcede0640?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=874&q=80"
                         alt=""
                       />
-                    </Menu.Button>
+                      <div className="p-6 flex flex-col justify-start">
+                        <h5 className="text-gray-900 text-xl font-medium mb-2">
+                          Jumping Jacks
+                        </h5>
+                        <ul className="text-gray-700 text-base mb-4">
+                          <li>10 reps - 20 KG</li>
+                          <li>10 reps - 30 KG</li>
+                          <li>10 reps - 30 KG</li>
+                          <li>100 reps - 4 KG</li>
+                        </ul>
+                        <a href="#">View Exercise</a>
+                      </div>
+                    </div>
                   </div>
-                  <Transition
-                    as={Fragment}
-                    enter="transition ease-out duration-100"
-                    enterFrom="transform opacity-0 scale-95"
-                    enterTo="transform opacity-100 scale-100"
-                    leave="transition ease-in duration-75"
-                    leaveFrom="transform opacity-100 scale-100"
-                    leaveTo="transform opacity-0 scale-95"
-                  >
-                    <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                      {userNavigation.map((item) => (
-                        <Menu.Item key={item.name}>
-                          {({ active }) => (
-                            <a
-                              href={item.href}
-                              className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block py-2 px-4 text-sm text-gray-700"
-                              )}
-                            >
-                              {item.name}
-                            </a>
-                          )}
-                        </Menu.Item>
-                      ))}
-                    </Menu.Items>
-                  </Transition>
-                </Menu>
+                </div>
+              </div>
+              <div className="w-80 justify-self-end">
+                <DateCalendar />
               </div>
             </div>
+            {/* /End replace */}
           </div>
-
-          <main className="flex-1 y">
-            <div className="py-6">
-              <div className="px-4 sm:px-6 md:px-0"></div>
-              <div className="px-4 sm:px-6 md:px-0">
-                {/* Replace with your content */}
-                <div className="py-4">
-                  <h3 className="text-3xl font-extrabold">Workout History</h3>
-                </div>
-                <div className="grid grid-cols-2">
-                  <div>
-                    <div className="py-4 columns-2 ">
-                      <div>
-                        <h4 className="font-bold">Workout</h4>
-                        <p>Cardio Day</p>
-                      </div>
-                      <div>
-                        <h4 className="font-bold">Date</h4>
-                        <p>January 14, 2021</p>
-                      </div>
-                    </div>
-                    <div className="">
-                      <div className="flex justify-start">
-                        <div className="flex flex-col grow md:flex-row md:max-w-xl rounded-lg bg-white shadow-lg">
-                          <img
-                            className=" w-full h-96 md:h-auto object-cover md:w-48 rounded-t-lg md:rounded-none md:rounded-l-lg"
-                            src="https://images.unsplash.com/photo-1506704563811-e81bcede0640?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=874&q=80"
-                            alt=""
-                          />
-                          <div className="p-6 flex flex-col justify-start">
-                            <h5 className="text-gray-900 text-xl font-medium mb-2">
-                              Jumping Jacks
-                            </h5>
-                            <ul className="text-gray-700 text-base mb-4">
-                              <li>10 reps - 20 KG</li>
-                              <li>10 reps - 30 KG</li>
-                              <li>10 reps - 30 KG</li>
-                              <li>100 reps - 4 KG</li>
-                            </ul>
-                            <a href="#">View Exercise</a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="w-80 justify-self-end">
-                    <DateCalendar />
-                  </div>
-                </div>
-                {/* /End replace */}
-              </div>
-            </div>
-          </main>
         </div>
-      </div>
-    </div>
+      </Layout>
+    </>
   );
 };
 
