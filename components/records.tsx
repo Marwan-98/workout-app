@@ -1,9 +1,9 @@
 /* This example requires Tailwind CSS v2.0+ */
 const stats = [
-  { name: "squats", stat: "255", color: "red-600" },
-  { name: "Bicep Curl", stat: "55", color: "black" },
-  { name: "Bench Press", stat: "150", color: "blue-600" },
-  { name: "Overhead Press", stat: "90", color: "green-600" },
+  { name: "squats", stat: "255", color: "bg-red-600" },
+  { name: "Bicep Curl", stat: "55", color: "bg-black" },
+  { name: "Bench Press", stat: "150", color: "bg-blue-600" },
+  { name: "Overhead Press", stat: "90", color: "bg-green-600" },
 ];
 
 const Records = () => {
@@ -16,7 +16,7 @@ const Records = () => {
         {stats.map((item) => (
           <div
             key={item.name}
-            className={`overflow-hidden rounded-lg bg-${item.color} px-4 py-5 shadow sm:p-6`}
+            className={`overflow-hidden rounded-lg ${item.color} px-4 py-5 shadow sm:p-6`}
           >
             <dt className="truncate text-sm font-medium text-white">
               {item.name}

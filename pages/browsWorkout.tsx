@@ -17,10 +17,10 @@ import BrowserWorkout from "../components/BrowserWorkout";
 const navigation = [
   { name: "Dashboard", href: "#", icon: HomeIcon, current: true },
   { name: "Browse Workouts", href: "#", icon: UsersIcon, current: false },
-  //   { name: "Projects", href: "#", icon: FolderIcon, current: false },
+    // { name: "Projects", href: "#", icon: FolderIcon, current: false },
   { name: "Calendar", href: "#", icon: CalendarIcon, current: false },
   { name: "Progress", href: "#", icon: InboxIcon, current: false },
-  //   { name: "Reports", href: "#", icon: ChartBarIcon, current: false },
+    // { name: "Reports", href: "#", icon: ChartBarIcon, current: false },
 ];
 const userNavigation = [
   { name: "Your Profile", href: "#" },
