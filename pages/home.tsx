@@ -3,10 +3,10 @@ import Records from "../components/records";
 import TimeLine from "../components/timeLine";
 import Layout from "../components/layout";
 
-export default function Example() {
+export default function Home() {
   return (
     <>
-      <Layout>
+      <Layout element={"Dashboard"}>
         <div className="py-6">
           <div className="px-4 sm:px-6 md:px-0"></div>
           <div className="px-4 sm:px-6 md:px-0">

@@ -10,10 +10,10 @@ import {
 import React, { Fragment, useState } from "react";
 
 const navigation = [
-  { name: "Dashboard", href: "#", icon: HomeIcon, current: true },
-  { name: "Browse Workouts", href: "#", icon: BoltIcon, current: false },
-  { name: "Calendar", href: "#", icon: CalendarIcon, current: false },
-  { name: "Progress", href: "#", icon: ChartBarIcon, current: false },
+  { name: "Dashboard", href: "#", icon: HomeIcon },
+  { name: "Browse Workouts", href: "#", icon: BoltIcon },
+  { name: "Calendar", href: "#", icon: CalendarIcon },
+  { name: "Progress", href: "#", icon: ChartBarIcon },
 ];
 
 const userNavigation = [
@@ -26,7 +26,13 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-function Layout({ children }: { children: React.ReactNode }) {
+function Layout({
+  children,
+  element,
+}: {
+  children: React.ReactNode;
+  element: string;
+}) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -97,7 +103,7 @@ function Layout({ children }: { children: React.ReactNode }) {
                         key={item.name}
                         href={item.href}
                         className={classNames(
-                          item.current
+                          item.name === element
                             ? "bg-gray-100 text-gray-900"
                             : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
                           "group rounded-md py-2 px-2 flex items-center text-base font-medium"
@@ -105,7 +111,7 @@ function Layout({ children }: { children: React.ReactNode }) {
                       >
                         <item.icon
                           className={classNames(
-                            item.current
+                            item.name === element
                               ? "text-gray-500"
                               : "text-gray-400 group-hover:text-gray-500",
                             "mr-4 flex-shrink-0 h-6 w-6"
@@ -144,7 +150,7 @@ function Layout({ children }: { children: React.ReactNode }) {
                   key={item.name}
                   href={item.href}
                   className={classNames(
-                    item.current
+                    item.name === element
                       ? "bg-gray-100 text-gray-900"
                       : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
                     "group rounded-md py-2 px-2 flex items-center text-sm font-medium"
@@ -152,7 +158,7 @@ function Layout({ children }: { children: React.ReactNode }) {
                 >
                   <item.icon
                     className={classNames(
-                      item.current
+                      item.name === element
                         ? "text-gray-500"
                         : "text-gray-400 group-hover:text-gray-500",
                       "mr-3 flex-shrink-0 h-6 w-6"
