@@ -1,4 +1,38 @@
+import { createClient } from "@supabase/supabase-js";
+import axios from "axios";
+import { useFormik } from "formik";
+import Link from "next/link";
+import { useRouter } from "next/router";
+
+const supabase = createClient(
+  "https://pqkkxvioahfuamuylvhp.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxa2t4dmlvYWhmdWFtdXlsdmhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjMxNTM2MjAsImV4cCI6MTk3ODcyOTYyMH0.1XSn463Ud_GgSSxeVw2YE4buC4RVLQFzRnUC60XIOX0"
+);
+
+async function signInWithEmail(email: string, password: string) {
+  try {
+    const { user, error } = await supabase.auth.signIn({ email, password });
+    if (error) throw error;
+    console.log(user);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 export default function SignIn() {
+  const router = useRouter();
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    onSubmit: (values) => {
+      signInWithEmail(values.email, values.password).then(() => {
+        router.push("/home");
+      });
+    },
+  });
   return (
     <div className="h-screen bg-white">
       <div className="flex min-h-full">
@@ -15,18 +49,22 @@ export default function SignIn() {
               </h2>
               <p className="mt-2 text-sm text-gray-600">
                 Or{" "}
-                <a
-                  href="#"
-                  className="font-medium text-[#1B2131] hover:text-[#1C2141]"
-                >
-                  create a new account
-                </a>
+                <Link href="/signUp">
+                  <span className="font-medium text-[#1B2131] hover:text-[#1C2141] cursor-pointer">
+                    Create a new account
+                  </span>
+                </Link>
               </p>
             </div>
 
             <div className="mt-8">
               <div className="mt-6">
-                <form action="#" method="POST" className="space-y-6">
+                <form
+                  action="#"
+                  method="POST"
+                  className="space-y-6"
+                  onSubmit={formik.handleSubmit}
+                >
                   <div>
                     <label
                       htmlFor="email"
@@ -36,6 +74,8 @@ export default function SignIn() {
                     </label>
                     <div className="mt-1">
                       <input
+                        value={formik.values.email}
+                        onChange={formik.handleChange}
                         id="email"
                         name="email"
                         type="email"
@@ -55,6 +95,8 @@ export default function SignIn() {
                     </label>
                     <div className="mt-1">
                       <input
+                        value={formik.values.password}
+                        onChange={formik.handleChange}
                         id="password"
                         name="password"
                         type="password"
