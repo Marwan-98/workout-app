@@ -1,3 +1,5 @@
+import { useRouter } from "next/router";
+import Link from "next/link";
 import { Transition, Dialog, Menu } from "@headlessui/react";
 import {
   XMarkIcon,
@@ -10,10 +12,10 @@ import {
 import React, { Fragment, useState } from "react";
 
 const navigation = [
-  { name: "Dashboard", href: "#", icon: HomeIcon },
-  { name: "Browse Workouts", href: "#", icon: BoltIcon },
-  { name: "Calendar", href: "#", icon: CalendarIcon },
-  { name: "Progress", href: "#", icon: ChartBarIcon },
+  { name: "Dashboard", href: "/home", icon: HomeIcon },
+  { name: "Browse Workouts", href: "/browseWorkouts", icon: BoltIcon },
+  { name: "Calendar", href: "/calendar", icon: CalendarIcon },
+  { name: "Progress", href: "/progress", icon: ChartBarIcon },
 ];
 
 const userNavigation = [
@@ -34,6 +36,7 @@ function Layout({
   element: string;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const router = useRouter();
 
   return (
     <div>
@@ -99,7 +102,7 @@ function Layout({
                 <div className="mt-5 h-0 flex-1 overflow-y-auto">
                   <nav className="space-y-1 px-2">
                     {navigation.map((item) => (
-                      <a
+                      <Link
                         key={item.name}
                         href={item.href}
                         className={classNames(
@@ -119,7 +122,7 @@ function Layout({
                           aria-hidden="true"
                         />
                         {item.name}
-                      </a>
+                      </Link>
                     ))}
                   </nav>
                 </div>
@@ -146,27 +149,27 @@ function Layout({
           <div className="mt-5 flex flex-grow flex-col">
             <nav className="flex-1 space-y-1 px-2 pb-4">
               {navigation.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className={classNames(
-                    item.name === element
-                      ? "bg-gray-100 text-gray-900"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-                    "group rounded-md py-2 px-2 flex items-center text-sm font-medium"
-                  )}
-                >
-                  <item.icon
+                <Link key={item.name} href={item.href}>
+                  <div
                     className={classNames(
                       item.name === element
-                        ? "text-gray-500"
-                        : "text-gray-400 group-hover:text-gray-500",
-                      "mr-3 flex-shrink-0 h-6 w-6"
+                        ? "bg-gray-100 text-gray-900"
+                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
+                      "group rounded-md py-2 px-2 flex items-center text-sm font-medium cursor-pointer"
                     )}
-                    aria-hidden="true"
-                  />
-                  {item.name}
-                </a>
+                  >
+                    <item.icon
+                      className={classNames(
+                        item.name === element
+                          ? "text-gray-500"
+                          : "text-gray-400 group-hover:text-gray-500",
+                        "mr-3 flex-shrink-0 h-6 w-6"
+                      )}
+                      aria-hidden="true"
+                    />
+                    {item.name}
+                  </div>
+                </Link>
               ))}
             </nav>
           </div>
@@ -212,15 +215,16 @@ function Layout({
                       {userNavigation.map((item) => (
                         <Menu.Item key={item.name}>
                           {({ active }) => (
-                            <a
-                              href={item.href}
-                              className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block py-2 px-4 text-sm text-gray-700"
-                              )}
-                            >
-                              {item.name}
-                            </a>
+                            <Link href={item.href}>
+                              <div
+                                className={classNames(
+                                  active ? "bg-gray-100" : "",
+                                  "block py-2 px-4 text-sm text-gray-700 cursor-pointer"
+                                )}
+                              >
+                                {item.name}
+                              </div>
+                            </Link>
                           )}
                         </Menu.Item>
                       ))}

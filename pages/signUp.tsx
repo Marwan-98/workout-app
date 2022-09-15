@@ -1,6 +1,38 @@
-import GenderInput from "../components/genderInput";
+import axios from "axios";
+import { useFormik } from "formik";
+import { createClient } from "@supabase/supabase-js";
+import Link from "next/link";
 
+const supabase = createClient(
+  "https://pqkkxvioahfuamuylvhp.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxa2t4dmlvYWhmdWFtdXlsdmhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjMxNTM2MjAsImV4cCI6MTk3ODcyOTYyMH0.1XSn463Ud_GgSSxeVw2YE4buC4RVLQFzRnUC60XIOX0"
+);
+
+async function signUpWithEmail(email: string, password: string) {
+  try {
+    const { user, error } = await supabase.auth.signUp({ email, password });
+    if (error) throw error;
+  } catch (err) {
+    console.log(err);
+  }
+}
 export default function SignUp() {
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+      firstName: "",
+      lastName: "",
+      weight: "",
+      height: "",
+      age: "",
+    },
+    onSubmit: (values) => {
+      signUpWithEmail(values.email, values.password).then(() => {
+        axios.post("http://localhost:3000/api/user", values);
+      });
+    },
+  });
   return (
     <div className="h-screen bg-white">
       <div className="flex min-h-full">
@@ -17,45 +49,53 @@ export default function SignUp() {
               </h2>
               <p className="mt-2 text-sm text-gray-600">
                 Or{" "}
-                <a
-                  href="#"
-                  className="font-medium text-[#1B2131] hover:text-[#1C2141]"
-                >
-                  Sign in to your account
-                </a>
+                <Link href="/signIn">
+                  <span className="font-medium text-[#1B2131] hover:text-[#1C2141] cursor-pointer">
+                    Sign in to your account
+                  </span>
+                </Link>
               </p>
             </div>
 
             <div className="mt-8">
               <div className="mt-6">
-                <form action="#" method="POST" className="space-y-6">
+                <form
+                  action="#"
+                  method="POST"
+                  className="space-y-6"
+                  onSubmit={formik.handleSubmit}
+                >
                   <div className="grid grid-cols-6 gap-6">
                     <div className="col-span-6 sm:col-span-3">
                       <label
-                        htmlFor="first-name"
+                        htmlFor="firstName"
                         className="block text-sm font-medium text-gray-700"
                       >
                         First name
                       </label>
                       <input
+                        value={formik.values.firstName}
+                        onChange={formik.handleChange}
                         type="text"
-                        name="first-name"
-                        id="first-name"
+                        name="firstName"
+                        id="firstName"
                         autoComplete="given-name"
                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                       />
                     </div>
                     <div className="col-span-6 sm:col-span-3">
                       <label
-                        htmlFor="last-name"
+                        htmlFor="lastName"
                         className="block text-sm font-medium text-gray-700"
                       >
                         Last name
                       </label>
                       <input
+                        value={formik.values.lastName}
+                        onChange={formik.handleChange}
                         type="text"
-                        name="last-name"
-                        id="last-name"
+                        name="lastName"
+                        id="lastName"
                         autoComplete="family-name"
                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                       />
@@ -63,15 +103,17 @@ export default function SignUp() {
 
                     <div className="col-span-6">
                       <label
-                        htmlFor="email-address"
+                        htmlFor="email"
                         className="block text-sm font-medium text-gray-700"
                       >
                         Email address
                       </label>
                       <input
+                        value={formik.values.email}
+                        onChange={formik.handleChange}
                         type="text"
-                        name="email-address"
-                        id="email-address"
+                        name="email"
+                        id="email"
                         autoComplete="email"
                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                       />
@@ -86,6 +128,8 @@ export default function SignUp() {
                       </label>
                       <div className="mt-1">
                         <input
+                          value={formik.values.password}
+                          onChange={formik.handleChange}
                           id="password"
                           name="password"
                           type="password"
@@ -104,6 +148,8 @@ export default function SignUp() {
                         Age
                       </label>
                       <input
+                        value={formik.values.age}
+                        onChange={formik.handleChange}
                         type="text"
                         name="age"
                         id="age"
@@ -120,6 +166,8 @@ export default function SignUp() {
                         Weight
                       </label>
                       <input
+                        value={formik.values.weight}
+                        onChange={formik.handleChange}
                         type="text"
                         name="weight"
                         id="weight"
@@ -136,6 +184,8 @@ export default function SignUp() {
                         Height
                       </label>
                       <input
+                        value={formik.values.height}
+                        onChange={formik.handleChange}
                         type="text"
                         name="height"
                         id="height"
