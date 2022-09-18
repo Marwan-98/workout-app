@@ -11,7 +11,7 @@ function Chart4() {
     datasets: [
       {
         label: "Chart-4",
-        data: [130, 158, 110, 245, 220, 190, 250],
+        data: [130, 158, 110, 245, 220, 190, 230],
         backgroundColor: ["white"],
         borderColor: "white",
         borderWidth: 2,
