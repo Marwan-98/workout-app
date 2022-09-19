@@ -142,7 +142,7 @@ function Layout({
           <div className="flex flex-shrink-0 items-center px-4">
             <img
               className="h-8 w-auto"
-              src="./assets/logo-4.png"
+              src="../../../assets/logo-4.png"
               alt="Your Company"
             />
           </div>

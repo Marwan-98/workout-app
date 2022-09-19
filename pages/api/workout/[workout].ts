@@ -8,20 +8,18 @@ export default async function handler(
   const prisma = new PrismaClient();
   switch (req.method) {
     case "GET":
-      const exercise = await prisma.exercise.findUnique({
+      const workout = await prisma.workout.findUnique({
         where: {
           id: +req.headers.id!,
         },
         include: {
-          workoutLines: {
-            where: {
-              workoutId: +req.headers.workoutid!,
-            },
-          },
+          exercises: true,
         },
       });
       prisma.$disconnect;
-      return res.status(200).json(exercise);
+      return res.status(200).json(workout?.exercises);
+      break;
+
     default:
       break;
   }
