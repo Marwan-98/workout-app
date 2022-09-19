@@ -28,7 +28,6 @@ model Workout {
   name         String
   users        User[]
   workoutLines WorkoutLine[]
-  exercises    Exercise[]
 }
 
 model Exercise {
@@ -38,7 +37,6 @@ model Exercise {
   imageURL     String
   videoURL     String?
   workoutLines WorkoutLine[]
-  workouts     Workout[]
   userLog      UserLog[]
 }
 

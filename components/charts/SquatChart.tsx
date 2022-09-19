@@ -13,6 +13,7 @@ import {
 } from "date-fns";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 function SquatChart({
   name,
@@ -23,6 +24,7 @@ function SquatChart({
   id: number;
   backgroundColor: string;
 }) {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const today = startOfToday();
   const [weightData, setWeightData] = useState<number[]>([]);
@@ -31,25 +33,27 @@ function SquatChart({
     prevMonths.unshift(format(sub(startOfMonth(today), { months: i }), "MMM"));
   }
   useEffect(() => {
-    for (let i = 0; i < prevMonths.length; i++) {
-      axios
-        .get("/api/record", {
-          headers: {
-            id,
-            year: getYear(today),
-            month: format(new Date(`${prevMonths[i]} 1`), "MM"),
-          },
-        })
-        .then((res) => {
-          res.data.length == 0
-            ? setWeightData((weightData) => [...weightData, 0])
-            : setWeightData((weightData) => [
-                ...weightData,
-                res.data[0]._avg.weight,
-              ]);
-        });
+    if (router.isReady) {
+      for (let i = 0; i < prevMonths.length; i++) {
+        axios
+          .get("/api/record", {
+            headers: {
+              id,
+              year: getYear(today),
+              month: format(new Date(`${prevMonths[i]} 1`), "MM"),
+            },
+          })
+          .then((res) => {
+            res.data.length == 0
+              ? setWeightData((weightData) => [...weightData, 0])
+              : setWeightData((weightData) => [
+                  ...weightData,
+                  res.data[0]._avg.weight,
+                ]);
+          });
+      }
     }
-  }, []);
+  }, [router.isReady]);
   useEffect(() => {
     if (weightData.length === prevMonths.length) {
       setLoading(false);

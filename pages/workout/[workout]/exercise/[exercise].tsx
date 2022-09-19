@@ -85,26 +85,27 @@ const Exercise = () => {
   };
 
   useEffect(() => {
-    console.log(userLog);
     Array.from({ length: 4 }).map((rep, idx) => {
       repsData[idx] = { repInputValue: "" };
     });
     Array.from({ length: 4 }).map((rep, idx) => {
       weightData[idx] = { weightInputValue: "" };
     });
-    axios
-      .get("http://localhost:3000/api/exercise/1", {
-        headers: {
-          id: String(exercise),
-          workoutId: String(workout),
-        },
-      })
-      .then((res) => {
-        dispatch(getExercise(res.data));
-      })
-      .catch((err) => console.log(err));
+    if (router.isReady) {
+      axios
+        .get(`http://localhost:3000/api/exercise/${exercise}`, {
+          headers: {
+            id: String(exercise),
+            workoutId: String(workout),
+          },
+        })
+        .then((res) => {
+          dispatch(getExercise(res.data));
+        })
+        .catch((err) => console.log(err));
+    }
     return () => {};
-  }, []);
+  }, [router.isReady]);
 
   useEffect(() => {
     console.log(userLog);
@@ -180,7 +181,7 @@ const Exercise = () => {
                           placeholder={`${
                             findExercise!.workoutLines[0].recweights
                           }`}
-                          value={String(weightData[idx].weightInputValue)}
+                          value={String(weightData[idx]?.weightInputValue)}
                           onChange={(e) => itemChange(e, idx, "w")}
                         />
                       </div>
@@ -196,7 +197,7 @@ const Exercise = () => {
                           placeholder={`${
                             findExercise!.workoutLines[0].redcreps
                           }`}
-                          value={String(repsData[idx].repInputValue)}
+                          value={String(repsData[idx]?.repInputValue)}
                           onChange={(e) => itemChange(e, idx, "r")}
                         />
                       </div>

@@ -3,11 +3,11 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 
 interface Exercise {
-  description: String;
+  description: string;
   id: number;
-  imageURL: String;
-  name: String;
-  videoURL: String;
+  imageURL: string;
+  name: string;
+  videoURL: string;
   workoutLines: [
     {
       exerciseId: number;
