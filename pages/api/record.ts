@@ -8,25 +8,31 @@ export default async function handler(
   const prisma = new PrismaClient();
   switch (req.method) {
     case "GET":
-      const { date, id } = req.body;
-      const record = await prisma.userLog.findMany({
+      let updatedRecord: any = [];
+      const { id, year, month } = req.headers;
+      let record = await prisma.userLog.groupBy({
+        by: ["exerciseId"],
         where: {
           createdAt: {
-            gte: new Date("2022-09-01").toISOString(),
-            lte: new Date("2022-09-30").toISOString(),
+            gte: new Date(`${year}-${month}-01`).toISOString(),
+            lte: new Date(`${year}-${month}-28`).toISOString(),
           },
-          exerciseId: id,
+          exerciseId: +id!,
         },
-        include: {
-          workoutLine: {
-            include: {
-              exercise: true,
-            },
-          },
+        _avg: {
+          weight: true,
         },
       });
+      if (record[0]) {
+        let exerciseName = await prisma.exercise.findFirst({
+          where: {
+            id: record[0].exerciseId,
+          },
+        });
+        updatedRecord = [{ ...record[0], name: exerciseName!.name }];
+      }
       prisma.$disconnect;
-      return res.status(200).json(record);
+      return res.status(200).json(updatedRecord);
     default:
       break;
   }
