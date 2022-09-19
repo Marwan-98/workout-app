@@ -5,23 +5,24 @@ import Chart3 from "../components/charts/Chart3";
 import Chart4 from "../components/charts/Chart4";
 
 const Progress = () => {
+  const averages = [
+    { name: "Bench Press", id: 1, backgroundColor: "red" },
+    { name: "Pull Ups", id: 2, backgroundColor: "black" },
+  ];
   return (
     <>
       <Layout element={"progress"}>
         <h1>My Progress</h1>
         <div className=" mx-2 my-5 grid grid-cols-2 gap-5">
-          <div className="">
-            <SquatChart />
-          </div>
-          <div className="">
-            <BicepChart />
-          </div>
-          <div className="">
-            <Chart3 />
-          </div>
-          <div className="">
-            <Chart4 />
-          </div>
+          {averages.map((average) => (
+            <div className="">
+              <SquatChart
+                name={average.name}
+                id={average.id}
+                backgroundColor={average.backgroundColor}
+              />
+            </div>
+          ))}
         </div>
       </Layout>
     </>

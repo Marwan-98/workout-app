@@ -6,6 +6,7 @@ import {
   add,
   format,
   getMonth,
+  getYear,
   startOfMonth,
   startOfToday,
   sub,
@@ -13,36 +14,55 @@ import {
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-function SquatChart() {
+function SquatChart({
+  name,
+  id,
+  backgroundColor,
+}: {
+  name: string;
+  id: number;
+  backgroundColor: string;
+}) {
+  const [loading, setLoading] = useState(true);
   const today = startOfToday();
-  const month = format(startOfMonth(today), "MMM");
   const [weightData, setWeightData] = useState<number[]>([]);
-  const prevMonths = [];
+  const prevMonths: string[] = [];
   for (let i = 0; i < 7; i++) {
     prevMonths.unshift(format(sub(startOfMonth(today), { months: i }), "MMM"));
   }
   useEffect(() => {
-    axios
-      .get("/api/record", {
-        headers: {
-          id: 1,
-        },
-      })
-      .then((res) => {
-        console.log(res.data);
-        for (let i = 0; i < res.data.length; i++) {
-          setWeightData((weightData) => [...weightData, res.data[i].weight]);
-        }
-      });
+    for (let i = 0; i < prevMonths.length; i++) {
+      axios
+        .get("/api/record", {
+          headers: {
+            id,
+            year: getYear(today),
+            month: format(new Date(`${prevMonths[i]} 1`), "MM"),
+          },
+        })
+        .then((res) => {
+          res.data.length == 0
+            ? setWeightData((weightData) => [...weightData, 0])
+            : setWeightData((weightData) => [
+                ...weightData,
+                res.data[0]._avg.weight,
+              ]);
+        });
+    }
   }, []);
+  useEffect(() => {
+    if (weightData.length === prevMonths.length) {
+      setLoading(false);
+    }
+  }, [weightData]);
   ChartJS?.register(CategoryScale);
   const userData = {
     labels: prevMonths,
-    backgroundColor: "red",
+    backgroundColor: "blue",
     datasets: [
       {
-        label: "Squat",
-        data: weightData,
+        label: name,
+        data: loading ? [] : weightData,
         backgroundColor: ["black"],
         borderColor: "white",
         lineTension: 0.4,
@@ -50,7 +70,11 @@ function SquatChart() {
       },
     ],
   };
-  return <Line data={userData} style={{ backgroundColor: "red" }} />;
+  return loading ? (
+    <h1>Loading</h1>
+  ) : (
+    <Line data={userData} style={{ backgroundColor }} />
+  );
 }
 
 export default SquatChart;
