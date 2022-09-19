@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { Transition, Dialog, Menu } from "@headlessui/react";
+import { createClient, User } from "@supabase/supabase-js";
 import {
   XMarkIcon,
   Bars3BottomLeftIcon,
@@ -9,7 +10,7 @@ import {
   ChartBarIcon,
   HomeIcon,
 } from "@heroicons/react/20/solid";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 
 const navigation = [
   { name: "Dashboard", href: "/home", icon: HomeIcon },
@@ -35,8 +36,27 @@ function Layout({
   children: React.ReactNode;
   element: string;
 }) {
+  const [user, setUser] = useState<User | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const router = useRouter();
+  const supabase = createClient(
+    "https://pqkkxvioahfuamuylvhp.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxa2t4dmlvYWhmdWFtdXlsdmhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjMxNTM2MjAsImV4cCI6MTk3ODcyOTYyMH0.1XSn463Ud_GgSSxeVw2YE4buC4RVLQFzRnUC60XIOX0"
+  );
+
+  const auth = async () => {
+    const getUser = supabase.auth.user();
+    return getUser;
+  };
+  useEffect(() => {
+    auth().then((res) => {
+      if (res) {
+        setUser(res);
+      } else {
+        router.push("/signIn");
+      }
+    });
+  }, []);
 
   return (
     <div>
@@ -235,7 +255,7 @@ function Layout({
             </div>
           </div>
 
-          <main className="flex-1 y">{children}</main>
+          <main className="flex-1 y">{user ? children : <h1>Loading</h1>}</main>
         </div>
       </div>
     </div>
