@@ -5,13 +5,6 @@ import BrowseExercises from "../../components/browseExercises";
 import Layout from "../../components/layout";
 
 const BrowsWorkout = () => {
-  useEffect(() => {
-    axios
-      .get("http://localhost:3000/api/workouts")
-      .then((res) => console.log(res));
-    return () => {};
-  }, []);
-
   return (
     <>
       <Layout element={"Browse Workouts"}>

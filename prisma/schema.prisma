@@ -27,7 +27,8 @@ model Workout {
   id           Int           @id @default(autoincrement())
   name         String
   users        User[]
-  workoutLines WorkoutLine[] @relation()
+  workoutLines WorkoutLine[]
+  exercises    Exercise[]
 }
 
 model Exercise {
@@ -36,7 +37,9 @@ model Exercise {
   description  String
   imageURL     String
   videoURL     String?
-  workoutLines WorkoutLine[] @relation()
+  workoutLines WorkoutLine[]
+  workouts     Workout[]
+  userLog      UserLog[]
 }
 
 model WorkoutLine {
@@ -58,5 +61,8 @@ model UserLog {
   reps          Int
   weight        Int
   step          Int
+  createdAt     DateTime    @default(now())
   user          User[]
+  exercise      Exercise    @relation(fields: [exerciseId], references: [id])
+  exerciseId    Int
 }
