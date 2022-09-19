@@ -24,7 +24,7 @@ const BrowseExercises = () => {
         .then((res) => dispatch(getExercises(res.data)));
     }
     return () => {};
-  }, [router]);
+  }, [router.isReady]);
   const images = [
     "../assets/photo1.jpg",
     "../assets/photo2.jpg",
