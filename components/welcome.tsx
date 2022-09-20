@@ -1,7 +1,10 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { EnvelopeIcon, PhoneIcon } from "@heroicons/react/20/solid";
+import Link from "next/link";
+import { useAppSelector } from "../redux/hooks";
 
 export default function Example() {
+  const user = useAppSelector((state) => state.user.user);
   return (
     <div className="border-b border-gray-200 bg-white px-4 py-5 sm:px-6">
       <div className="-ml-4 -mt-4 flex flex-wrap items-center justify-between sm:flex-nowrap">
@@ -16,19 +19,23 @@ export default function Example() {
             </div>
             <div className="ml-4">
               <h3 className="text-lg font-medium leading-6 text-gray-900">
-                Good Morning, John Doe
+                Good Morning, {user?.firstName}
               </h3>
-              <p className="text-sm text-gray-500">🔥 10 Day Streak</p>
+              <p className="text-sm text-gray-500">
+                🔥 {user?.streak} Day Streak
+              </p>
             </div>
           </div>
         </div>
         <div className="ml-4 mt-4 flex flex-shrink-0">
-          <button
-            type="button"
-            className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          >
-            <span>Browse Workouts</span>
-          </button>
+          <Link href={"/browseWorkouts"}>
+            <button
+              type="button"
+              className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
+              <span>Browse Workouts</span>
+            </button>
+          </Link>
           <button
             type="button"
             className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-black px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-black-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"

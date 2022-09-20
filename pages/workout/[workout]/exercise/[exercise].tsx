@@ -66,6 +66,7 @@ const Exercise = () => {
             weight: +weightData[idx].weightInputValue,
             workoutLineId: findExercise?.workoutLines[0].id,
             exerciseId: +exercise!,
+            userId: 1,
           },
         ]);
       }
@@ -182,7 +183,15 @@ const Exercise = () => {
                             findExercise!.workoutLines[0].recweights
                           }`}
                           value={String(weightData[idx]?.weightInputValue)}
-                          onChange={(e) => itemChange(e, idx, "w")}
+                          onChange={(e) => {
+                            if (
+                              /^[0-9]*$/.test(
+                                (e.target as HTMLInputElement).value
+                              )
+                            ) {
+                              itemChange(e, idx, "w");
+                            }
+                          }}
                         />
                       </div>
                     </td>
@@ -198,7 +207,15 @@ const Exercise = () => {
                             findExercise!.workoutLines[0].redcreps
                           }`}
                           value={String(repsData[idx]?.repInputValue)}
-                          onChange={(e) => itemChange(e, idx, "r")}
+                          onChange={(e) => {
+                            if (
+                              /^[0-9]*$/.test(
+                                (e.target as HTMLInputElement).value
+                              )
+                            ) {
+                              itemChange(e, idx, "r");
+                            }
+                          }}
                         />
                       </div>
                     </td>

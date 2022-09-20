@@ -1,11 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const prisma = new PrismaClient();
   switch (req.method) {
     case "GET":
       let updatedRecord: any = [];
@@ -18,6 +18,7 @@ export default async function handler(
             lte: new Date(`${year}-${month}-28`).toISOString(),
           },
           exerciseId: +id!,
+          userId: 1,
         },
         _avg: {
           weight: true,

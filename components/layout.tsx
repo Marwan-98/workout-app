@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { Transition, Dialog, Menu } from "@headlessui/react";
-import { createClient, User } from "@supabase/supabase-js";
+import { createClient, PostgrestResponse } from "@supabase/supabase-js";
 import {
   XMarkIcon,
   Bars3BottomLeftIcon,
@@ -11,6 +11,10 @@ import {
   HomeIcon,
 } from "@heroicons/react/20/solid";
 import React, { Fragment, useEffect, useState } from "react";
+import { useAppSelector } from "../redux/hooks";
+import { useDispatch } from "react-redux";
+import { getUser } from "../redux/slices/userSlice";
+import { User } from "../redux/slices/userSlice";
 
 const navigation = [
   { name: "Dashboard", href: "/home", icon: HomeIcon },
@@ -36,22 +40,27 @@ function Layout({
   children: React.ReactNode;
   element: string;
 }) {
-  const [user, setUser] = useState<User | null>(null);
+  const user = useAppSelector((state) => state.user.user);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const router = useRouter();
+  const dispatch = useDispatch();
   const supabase = createClient(
-    "https://pqkkxvioahfuamuylvhp.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxa2t4dmlvYWhmdWFtdXlsdmhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjMxNTM2MjAsImV4cCI6MTk3ODcyOTYyMH0.1XSn463Ud_GgSSxeVw2YE4buC4RVLQFzRnUC60XIOX0"
+    process.env.NEXT_PUBLIC_DATABASE_NAME!,
+    process.env.NEXT_PUBLIC_DATABASE_ANON_KEY!
   );
 
   const auth = async () => {
     const getUser = supabase.auth.user();
     return getUser;
   };
+
   useEffect(() => {
-    auth().then((res) => {
+    auth().then(async (res) => {
       if (res) {
-        setUser(res);
+        const { data }: PostgrestResponse<User> = await supabase
+          .from("User")
+          .select("id, firstName, lastName, streak");
+        if (data) dispatch(getUser(data[0]));
       } else {
         router.push("/signIn");
       }
@@ -214,7 +223,9 @@ function Layout({
                   <div>
                     <Menu.Button className="flex max-w-xs items-center rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                       <span className="sr-only">Open user menu</span>
-                      <span className="text-base mx-4">John Doe</span>
+                      <span className="text-base mx-4">
+                        {user?.firstName} {user?.lastName}
+                      </span>
                       <img
                         className="h-8 w-8 rounded-full"
                         src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
