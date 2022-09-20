@@ -15,7 +15,7 @@ const Progress = () => {
         <h1>My Progress</h1>
         <div className=" mx-2 my-5 grid grid-cols-2 gap-5">
           {averages.map((average) => (
-            <div className="">
+            <div className="" key={average.id}>
               <SquatChart
                 name={average.name}
                 id={average.id}

@@ -5,8 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 const supabase = createClient(
-  "https://pqkkxvioahfuamuylvhp.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxa2t4dmlvYWhmdWFtdXlsdmhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjMxNTM2MjAsImV4cCI6MTk3ODcyOTYyMH0.1XSn463Ud_GgSSxeVw2YE4buC4RVLQFzRnUC60XIOX0"
+  process.env.NEXT_PUBLIC_DATABASE_NAME!,
+  process.env.NEXT_PUBLIC_DATABASE_ANON_KEY!
 );
 
 async function signInWithEmail(email: string, password: string) {
