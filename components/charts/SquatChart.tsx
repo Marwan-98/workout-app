@@ -74,10 +74,40 @@ function SquatChart({
       },
     ],
   };
+  const options = {
+    responsive: true,
+    scales: {
+      x: {
+        ticks: {
+          color: "white",
+          font: {
+            size: 12,
+          },
+        },
+      },
+      y: {
+        ticks: {
+          color: "white",
+          font: {
+            size: 12,
+          },
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        position: "top" as const,
+      },
+      title: {
+        display: false,
+        text: "Chart.js Line Chart",
+      },
+    },
+  };
   return loading ? (
     <h1>Loading</h1>
   ) : (
-    <Line data={userData} style={{ backgroundColor }} />
+    <Line data={userData} options={options} style={{ backgroundColor }} />
   );
 }
 

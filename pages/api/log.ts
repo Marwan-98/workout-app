@@ -1,14 +1,56 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
+import {
+  add,
+  differenceInDays,
+  differenceInHours,
+  isSameDay,
+  startOfToday,
+} from "date-fns";
+
+const prisma = new PrismaClient();
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const prisma = new PrismaClient();
   switch (req.method) {
     case "POST":
       const { logs } = req.body;
+      const today = startOfToday();
+      const lastUserLog = await prisma.userLog.findFirst({
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+      if (lastUserLog && differenceInHours(today, lastUserLog.createdAt) > 24) {
+        await prisma.user.update({
+          where: {
+            id: 1,
+          },
+          data: {
+            streak: 0,
+            lastLog: today,
+          },
+        });
+      } else if (
+        lastUserLog &&
+        differenceInHours(today, lastUserLog.createdAt) < 24
+      ) {
+        const findUser = await prisma.user.findFirst({
+          where: {
+            id: 1,
+          },
+        });
+        await prisma.user.update({
+          where: {
+            id: 1,
+          },
+          data: {
+            streak: differenceInDays(lastUserLog.createdAt, findUser!.lastLog),
+          },
+        });
+      }
       const userLog = await prisma.userLog.createMany({
         data: [...logs],
       });
@@ -17,6 +59,9 @@ export default async function handler(
     case "GET":
       const userLogs = await prisma.userLog.groupBy({
         by: ["exerciseId"],
+        where: {
+          userId: 1,
+        },
         _max: {
           weight: true,
         },

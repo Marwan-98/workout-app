@@ -1,11 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 
+const prisma = new PrismaClient();
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const prisma = new PrismaClient();
   switch (req.method) {
     case "GET":
       const exercise = await prisma.exercise.findUnique({

@@ -21,6 +21,8 @@ model User {
   height    Int
   workouts  Workout[]
   userLog   UserLog[]
+  streak    Int       @default(0)
+  lastLog   DateTime? @default(now())
 }
 
 model Workout {
@@ -60,7 +62,8 @@ model UserLog {
   weight        Int
   step          Int
   createdAt     DateTime    @default(now())
-  user          User[]
+  user          User        @relation(fields: [userId], references: [id])
+  userId        Int
   exercise      Exercise    @relation(fields: [exerciseId], references: [id])
   exerciseId    Int
 }
