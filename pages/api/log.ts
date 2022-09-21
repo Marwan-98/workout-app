@@ -4,11 +4,11 @@ import {
   add,
   differenceInDays,
   differenceInHours,
+  differenceInMinutes,
   isSameDay,
   startOfToday,
 } from "date-fns";
-
-const prisma = new PrismaClient();
+import { prisma } from "./db";
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,51 +16,48 @@ export default async function handler(
 ) {
   switch (req.method) {
     case "POST":
-      const { logs } = req.body;
-      const today = startOfToday();
-      const lastUserLog = await prisma.userLog.findFirst({
-        orderBy: {
-          createdAt: "desc",
+      const { logs, userId } = req.body;
+      const today = new Date();
+      const findUser = await prisma.user.findFirst({
+        where: {
+          id: userId,
         },
       });
-      if (lastUserLog && differenceInHours(today, lastUserLog.createdAt) > 24) {
-        await prisma.user.update({
-          where: {
-            id: 1,
-          },
-          data: {
-            streak: 0,
-            lastLog: today,
-          },
-        });
-      } else if (
-        lastUserLog &&
-        differenceInHours(today, lastUserLog.createdAt) < 24
-      ) {
-        const findUser = await prisma.user.findFirst({
-          where: {
-            id: 1,
-          },
-        });
-        await prisma.user.update({
-          where: {
-            id: 1,
-          },
-          data: {
-            streak: differenceInDays(lastUserLog.createdAt, findUser!.lastLog),
-          },
-        });
-      }
       const userLog = await prisma.userLog.createMany({
         data: [...logs],
       });
-      prisma.$disconnect;
+      if (findUser!.streak === 0) {
+        await prisma.user.update({
+          where: {
+            id: userId,
+          },
+          data: {
+            streak: Math.ceil(
+              differenceInMinutes(today, findUser!.lastLog!) / 60 / 24
+            ),
+            lastLog: today,
+          },
+        });
+      } else {
+        await prisma.user.update({
+          where: {
+            id: userId,
+          },
+          data: {
+            streak: Math.ceil(
+              differenceInMinutes(today, findUser!.lastLog!) / 60 / 24
+            ),
+          },
+        });
+      }
+      await prisma.$disconnect;
       return res.status(200).json(userLog);
     case "GET":
+      const { id } = req.headers;
       const userLogs = await prisma.userLog.groupBy({
         by: ["exerciseId"],
         where: {
-          userId: 1,
+          userId: 2,
         },
         _max: {
           weight: true,
@@ -83,7 +80,7 @@ export default async function handler(
           weight: userLogs[i]._max.weight,
         };
       }
-      prisma.$disconnect;
+      await prisma.$disconnect;
       return res.status(200).json(records);
     default:
       break;

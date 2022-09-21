@@ -14,6 +14,7 @@ import {
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { useAppSelector } from "../../redux/hooks";
 
 function SquatChart({
   name,
@@ -24,6 +25,7 @@ function SquatChart({
   id: number;
   backgroundColor: string;
 }) {
+  const user = useAppSelector((state) => state.user.user);
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const today = startOfToday();
@@ -39,6 +41,7 @@ function SquatChart({
           .get("/api/record", {
             headers: {
               id,
+              userId: user!.id,
               year: getYear(today),
               month: format(new Date(`${prevMonths[i]} 1`), "MM"),
             },

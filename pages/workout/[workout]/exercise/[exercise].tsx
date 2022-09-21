@@ -7,6 +7,7 @@ import { useAppSelector } from "../../../../redux/hooks";
 import { getExercise } from "../../../../redux/slices/exerciseSlice";
 
 const Exercise = () => {
+  const user = useAppSelector((state) => state.user.user);
   const router = useRouter();
   const { exercise, workout } = router.query;
   const dispatch = useDispatch();
@@ -66,7 +67,7 @@ const Exercise = () => {
             weight: +weightData[idx].weightInputValue,
             workoutLineId: findExercise?.workoutLines[0].id,
             exerciseId: +exercise!,
-            userId: 1,
+            userId: user!.id,
           },
         ]);
       }
@@ -81,6 +82,7 @@ const Exercise = () => {
     axios
       .post("/api/log", {
         logs: userLog,
+        userId: user!.id,
       })
       .then((res) => console.log(res));
   };

@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import { prisma } from "./db";
 
 export default async function handler(
   req: NextApiRequest,
@@ -9,7 +9,7 @@ export default async function handler(
   switch (req.method) {
     case "GET":
       let updatedRecord: any = [];
-      const { id, year, month } = req.headers;
+      const { id, userid, year, month } = req.headers;
       let record = await prisma.userLog.groupBy({
         by: ["exerciseId"],
         where: {
@@ -18,7 +18,7 @@ export default async function handler(
             lte: new Date(`${year}-${month}-28`).toISOString(),
           },
           exerciseId: +id!,
-          userId: 1,
+          userId: +userid!,
         },
         _avg: {
           weight: true,
@@ -32,7 +32,7 @@ export default async function handler(
         });
         updatedRecord = [{ ...record[0], name: exerciseName!.name }];
       }
-      prisma.$disconnect;
+      await prisma.$disconnect;
       return res.status(200).json(updatedRecord);
     default:
       break;

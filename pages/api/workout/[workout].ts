@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 
-const prisma = new PrismaClient();
+import { prisma } from "../db";
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -17,7 +17,7 @@ export default async function handler(
           exercise: true,
         },
       });
-      prisma.$disconnect;
+      await prisma.$disconnect;
       const exercises = workout.map((workout) => workout.exercise);
       return res.status(200).json([...exercises]);
     default:
