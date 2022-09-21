@@ -133,7 +133,9 @@ const DateCalendar = ({
                     "mx-auto flex h-7 w-7 items-center justify-center rounded-full",
                     isEqual(day, selectedDay) && isToday(day) && "bg-gray-900",
                     Object.keys(userExercises).some((exerciseDay) =>
-                      isSameDay(day, new Date(exerciseDay)) ? true : false
+                      isSameDay(day, new Date(exerciseDay.split("T")[0]))
+                        ? true
+                        : false
                     ) && "bg-[#DC2626] text-white",
                     isEqual(day, selectedDay) && !isToday(day) && "bg-gray-900"
                   )}

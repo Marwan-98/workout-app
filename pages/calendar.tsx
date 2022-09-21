@@ -16,12 +16,11 @@ const Calendar = () => {
   let today = startOfToday();
   let [selectedDay, setSelectedDay] = useState(today);
   let [currentMonth, setCurrentMonth] = useState(format(today, "MMMM-yyyy"));
-  
+
   const user = useAppSelector((state) => state.user.user);
 
   useEffect(() => {
     if (user) {
-      console.log(user.id);
       axios
         .get("/api/exercises", { headers: { id: user.id } })
         .then(({ data }: { data: Array<userExercise> }) => {
@@ -29,7 +28,7 @@ const Calendar = () => {
           dispatch(getUserExercises(exercises));
         });
     }
-  }, []);
+  }, [user]);
   return (
     <>
       <Layout element={"Calendar"}>
@@ -43,21 +42,16 @@ const Calendar = () => {
 
             <div className="grid grid-cols-2">
               <div>
-                <div className="py-4 columns-2 ">
-                  <div>
-                    <h4 className="font-bold">Workout</h4>
-                    <p>Cardio Day</p>
-                  </div>
+                <div className="py-4">
                   <div>
                     <h4 className="font-bold">Date</h4>
-                    <p>January 14, 2021</p>
+                    <p>{format(selectedDay, "MMMM dd, yyyy")}</p>
                   </div>
                 </div>
                 <div className="">
                   <div className="flex flex-col justify-start">
-
                     {Object.keys(userExercises).map((key, idx) => {
-                      if (isSameDay(selectedDay, new Date(key))) {
+                      if (isSameDay(selectedDay, new Date(key.split("T")[0]))) {
                         return (
                           <div
                             key={idx}
@@ -70,18 +64,22 @@ const Calendar = () => {
                             />
                             <div className="p-6 flex flex-col justify-start">
                               <h5 className="text-gray-900 text-xl font-medium mb-2">
-                                {userExercises[key][idx].exercise.name}
+                                {userExercises[key][0].exercise.name}
                               </h5>
                               <ul className="text-gray-700 text-base mb-4">
-                                {userExercises[key].map((log) => {
+                                {userExercises[key].map((log, index) => {
                                   return (
-                                    <li key={idx}>
+                                    <li key={index}>
                                       {log.reps} reps - {log.weight} KG
                                     </li>
                                   );
                                 })}
                               </ul>
-                              <a href="#">View Exercise</a>
+                              <a
+                                href={`/workout/${userExercises[key][0].workoutLine.workoutId}/exercise/${userExercises[key][0].exerciseId}`}
+                              >
+                                View Exercise
+                              </a>
                             </div>
                           </div>
                         );

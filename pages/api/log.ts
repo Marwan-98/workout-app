@@ -26,30 +26,6 @@ export default async function handler(
       const userLog = await prisma.userLog.createMany({
         data: [...logs],
       });
-      if (findUser!.streak === 0) {
-        await prisma.user.update({
-          where: {
-            id: userId,
-          },
-          data: {
-            streak: Math.ceil(
-              differenceInMinutes(today, findUser!.lastLog!) / 60 / 24
-            ),
-            lastLog: today,
-          },
-        });
-      } else {
-        await prisma.user.update({
-          where: {
-            id: userId,
-          },
-          data: {
-            streak: Math.ceil(
-              differenceInMinutes(today, findUser!.lastLog!) / 60 / 24
-            ),
-          },
-        });
-      }
       await prisma.$disconnect;
       return res.status(200).json(userLog);
     case "GET":
@@ -57,7 +33,7 @@ export default async function handler(
       const userLogs = await prisma.userLog.groupBy({
         by: ["exerciseId"],
         where: {
-          userId: 2,
+          userId: +id!,
         },
         _max: {
           weight: true,

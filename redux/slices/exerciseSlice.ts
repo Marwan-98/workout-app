@@ -2,22 +2,22 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 
+interface WorkoutLine {
+  exerciseId: number;
+  id: number;
+  recsets: number;
+  recweights: number;
+  redcreps: number;
+  workoutId: number;
+}
+
 interface Exercise {
   description: string;
   id: number;
   imageURL: string;
   name: string;
   videoURL: string;
-  workoutLines: [
-    {
-      exerciseId: number;
-      id: number;
-      recsets: number;
-      recweights: number;
-      redcreps: number;
-      workoutId: number;
-    }
-  ];
+  workoutLines: WorkoutLine[];
 }
 
 export interface userExercise {
@@ -30,6 +30,7 @@ export interface userExercise {
   userId: number;
   weight: number;
   workoutLineId: number;
+  workoutLine: WorkoutLine;
 }
 
 const initialState: {

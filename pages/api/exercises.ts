@@ -14,6 +14,7 @@ export default async function handler(
         },
         include: {
           exercise: true,
+          workoutLine: true,
         },
       });
       await prisma.$disconnect;
