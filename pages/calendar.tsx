@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import axios from "axios";
 import { format, isSameDay, startOfToday } from "date-fns";
 import { useEffect, useState } from "react";
@@ -16,13 +17,18 @@ const Calendar = () => {
   let [selectedDay, setSelectedDay] = useState(today);
   let [currentMonth, setCurrentMonth] = useState(format(today, "MMMM-yyyy"));
 
+  const user = useAppSelector((state) => state.user.user);
+
   useEffect(() => {
-    axios
-      .get("/api/exercises")
-      .then(({ data }: { data: Array<userExercise> }) => {
-        const exercises = groupBy(data, (exercise) => exercise.createdAt);
-        dispatch(getUserExercises(exercises));
-      });
+    if (user) {
+      console.log(user.id);
+      axios
+        .get("/api/exercises", { headers: { id: user.id } })
+        .then(({ data }: { data: Array<userExercise> }) => {
+          const exercises = groupBy(data, (exercise) => exercise.createdAt);
+          dispatch(getUserExercises(exercises));
+        });
+    }
   }, []);
   return (
     <>
@@ -49,29 +55,13 @@ const Calendar = () => {
                 </div>
                 <div className="">
                   <div className="flex flex-col justify-start">
-                    {/* <div className="flex flex-col grow md:flex-row md:max-w-xl rounded-lg bg-white shadow-lg">
-                      <img
-                        className=" w-full h-96 md:h-auto object-cover md:w-48 rounded-t-lg md:rounded-none md:rounded-l-lg"
-                        src="https://images.unsplash.com/photo-1506704563811-e81bcede0640?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=874&q=80"
-                        alt=""
-                      />
-                      <div className="p-6 flex flex-col justify-start">
-                        <h5 className="text-gray-900 text-xl font-medium mb-2">
-                          Jumping Jacks
-                        </h5>
-                        <ul className="text-gray-700 text-base mb-4">
-                          <li>10 reps - 20 KG</li>
-                          <li>10 reps - 30 KG</li>
-                          <li>10 reps - 30 KG</li>
-                          <li>100 reps - 4 KG</li>
-                        </ul>
-                        <a href="#">View Exercise</a>
-                      </div>
-                    </div> */}
                     {Object.keys(userExercises).map((key, idx) => {
                       if (isSameDay(selectedDay, new Date(key))) {
                         return (
-                          <div className="flex flex-col my-5 grow md:flex-row md:max-w-xl rounded-lg bg-white shadow-lg">
+                          <div
+                            key={idx}
+                            className="flex flex-col my-5 grow md:flex-row md:max-w-xl rounded-lg bg-white shadow-lg"
+                          >
                             <img
                               className=" w-full h-96 md:h-auto object-cover md:w-48 rounded-t-lg md:rounded-none md:rounded-l-lg"
                               src="https://images.unsplash.com/photo-1506704563811-e81bcede0640?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=874&q=80"
@@ -84,7 +74,7 @@ const Calendar = () => {
                               <ul className="text-gray-700 text-base mb-4">
                                 {userExercises[key].map((log) => {
                                   return (
-                                    <li>
+                                    <li key={idx}>
                                       {log.reps} reps - {log.weight} KG
                                     </li>
                                   );
