@@ -1,7 +1,12 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
-import { differenceInHours } from "date-fns";
+import {
+  differenceInHours,
+  differenceInMinutes,
+  format,
+  isSameDay,
+} from "date-fns";
 import { prisma } from "./db";
 
 export default async function handler(
@@ -12,30 +17,50 @@ export default async function handler(
     case "GET":
       const { id } = req.headers;
       const today = new Date();
-      const findUser = await prisma.user.findFirst({
+      let streak = 0;
+      let isStreak = true;
+      let idx = 0;
+
+      const userLogs = await prisma.userLog.groupBy({
+        by: ["createdAt"],
         where: {
-          id: +id!,
+          userId: +id!,
         },
-      });
-      const lastUserLog = await prisma.userLog.findFirst({
         orderBy: {
           createdAt: "desc",
         },
       });
-      if (
-        Math.ceil(differenceInHours(today, lastUserLog!.createdAt!) / 24) > 1
-      ) {
-        console.log("streak broken");
-        await prisma.user.update({
-          where: {
-            id: 2,
-          },
-          data: {
-            lastLog: today,
-            streak: 0,
-          },
-        });
+
+      if (isSameDay(today, userLogs[0].createdAt)) {
+        streak++;
+        while (isStreak && userLogs[idx + 1]) {
+          const date = new Date(
+            userLogs[idx + 1].createdAt.toDateString().split("T")[0]
+          );
+          if (
+            !isSameDay(userLogs[idx].createdAt, date) &&
+            differenceInHours(
+              userLogs[idx].createdAt,
+              userLogs[idx + 1].createdAt
+            ) < 24
+          ) {
+            streak++;
+            idx++;
+          } else if (isSameDay(userLogs[idx].createdAt, date)) {
+            idx++;
+          } else {
+            isStreak = false;
+          }
+        }
       }
+      const findUser = await prisma.user.update({
+        where: {
+          id: +id!,
+        },
+        data: {
+          streak,
+        },
+      });
       await prisma.$disconnect;
       return res.status(200).json(findUser);
     default:
