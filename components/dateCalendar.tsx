@@ -1,5 +1,5 @@
 /* This example requires Tailwind CSS v2.0+ */
-import { Fragment, useState } from "react";
+import { Dispatch, Fragment, SetStateAction, useState } from "react";
 import {
   CalendarIcon,
   ChevronLeftIcon,
@@ -16,6 +16,7 @@ import {
   format,
   getDay,
   isEqual,
+  isSameDay,
   isSameMonth,
   isToday,
   parse,
@@ -24,15 +25,27 @@ import {
   startOfWeek,
   sub,
 } from "date-fns";
+import { useAppSelector } from "../redux/hooks";
 
 function classNames(...classes: (string | boolean | undefined)[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-const DateCalendar = () => {
-  let today = startOfToday();
-  let [selectedDay, setSelectedDay] = useState(today);
-  let [currentMonth, setCurrentMonth] = useState(format(today, "MMMM-yyyy"));
+const DateCalendar = ({
+  selectedDay,
+  setSelectedDay,
+  currentMonth,
+  setCurrentMonth,
+  today,
+}: {
+  selectedDay: Date;
+  setSelectedDay: Dispatch<SetStateAction<Date>>;
+  currentMonth: string;
+  setCurrentMonth: Dispatch<SetStateAction<string>>;
+  today: Date;
+}) => {
+  const userExercises = useAppSelector((state) => state.exercise.userExercise);
+
   let firstDateCurrentMonth = parse(currentMonth, "MMMM-yyyy", new Date());
 
   let days = eachDayOfInterval({
@@ -84,44 +97,52 @@ const DateCalendar = () => {
           <div>S</div>
         </div>
         <div className="isolate mt-2 grid grid-cols-7 gap-px rounded-lg bg-gray-200 text-sm shadow ring-1 ring-gray-200">
-          {days.map((day, dayIdx) => (
-            <button
-              onClick={() => setSelectedDay(day)}
-              key={day.toString()}
-              type="button"
-              className={classNames(
-                "py-1.5 hover:bg-gray-100 focus:z-10",
-                isSameMonth(day, today) ? "bg-white" : "bg-gray-50",
-                (isEqual(day, selectedDay) || isToday(day)) && "font-semibold",
-                isEqual(day, selectedDay) && "text-white",
-                !isEqual(day, selectedDay) &&
-                  isSameMonth(day, firstDateCurrentMonth) &&
-                  !isToday(day) &&
-                  "text-gray-900",
-                !isEqual(day, selectedDay) &&
-                  !isSameMonth(day, firstDateCurrentMonth) &&
-                  !isToday(day) &&
-                  "text-gray-400",
-                isToday(day) && !isEqual(day, selectedDay) && "text-indigo-600",
-                dayIdx === 0 && "rounded-tl-lg",
-                dayIdx === 0 && colStartClasses[getDay(day)],
-                dayIdx === 6 && "rounded-tr-lg",
-                dayIdx === days.length - 7 && "rounded-bl-lg",
-                dayIdx === days.length - 1 && "rounded-br-lg"
-              )}
-            >
-              <time
-                dateTime={format(day, "yyyy-MM-dd")}
+          {days.map((day, dayIdx) => {
+            return (
+              <button
+                onClick={() => setSelectedDay(day)}
+                key={day.toString()}
+                type="button"
                 className={classNames(
-                  "mx-auto flex h-7 w-7 items-center justify-center rounded-full",
-                  isEqual(day, selectedDay) && isToday(day) && "bg-[#DC2626]",
-                  isEqual(day, selectedDay) && !isToday(day) && "bg-gray-900"
+                  "py-1.5 hover:bg-gray-100 focus:z-10",
+                  isSameMonth(day, today) ? "bg-white" : "bg-gray-50",
+                  (isEqual(day, selectedDay) || isToday(day)) &&
+                    "font-semibold",
+                  isEqual(day, selectedDay) && "text-white",
+                  !isEqual(day, selectedDay) &&
+                    isSameMonth(day, firstDateCurrentMonth) &&
+                    !isToday(day) &&
+                    "text-gray-900",
+                  !isEqual(day, selectedDay) &&
+                    !isSameMonth(day, firstDateCurrentMonth) &&
+                    !isToday(day) &&
+                    "text-gray-400",
+                  isToday(day) &&
+                    !isEqual(day, selectedDay) &&
+                    "text-indigo-600",
+                  dayIdx === 0 && "rounded-tl-lg",
+                  dayIdx === 0 && colStartClasses[getDay(day)],
+                  dayIdx === 6 && "rounded-tr-lg",
+                  dayIdx === days.length - 7 && "rounded-bl-lg",
+                  dayIdx === days.length - 1 && "rounded-br-lg"
                 )}
               >
-                {format(day, "d")}
-              </time>
-            </button>
-          ))}
+                <time
+                  dateTime={format(day, "yyyy-MM-dd")}
+                  className={classNames(
+                    "mx-auto flex h-7 w-7 items-center justify-center rounded-full",
+                    isEqual(day, selectedDay) && isToday(day) && "bg-gray-900",
+                    Object.keys(userExercises).some((exerciseDay) =>
+                      isSameDay(day, new Date(exerciseDay)) ? true : false
+                    ) && "bg-[#DC2626] text-white",
+                    isEqual(day, selectedDay) && !isToday(day) && "bg-gray-900"
+                  )}
+                >
+                  {format(day, "d")}
+                </time>
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>

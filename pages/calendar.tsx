@@ -1,7 +1,29 @@
+import axios from "axios";
+import { format, isSameDay, startOfToday } from "date-fns";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import DateCalendar from "../components/dateCalendar";
 import Layout from "../components/layout";
+import { useAppSelector } from "../redux/hooks";
+import { getUserExercises, userExercise } from "../redux/slices/exerciseSlice";
+import { groupBy } from "lodash";
 
 const Calendar = () => {
+  // new Date("2022-9-20 17:57:55")
+  const dispatch = useDispatch();
+  const userExercises = useAppSelector((state) => state.exercise.userExercise);
+  let today = startOfToday();
+  let [selectedDay, setSelectedDay] = useState(today);
+  let [currentMonth, setCurrentMonth] = useState(format(today, "MMMM-yyyy"));
+
+  useEffect(() => {
+    axios
+      .get("/api/exercises")
+      .then(({ data }: { data: Array<userExercise> }) => {
+        const exercises = groupBy(data, (exercise) => exercise.createdAt);
+        dispatch(getUserExercises(exercises));
+      });
+  }, []);
   return (
     <>
       <Layout element={"Calendar"}>
@@ -26,8 +48,8 @@ const Calendar = () => {
                   </div>
                 </div>
                 <div className="">
-                  <div className="flex justify-start">
-                    <div className="flex flex-col grow md:flex-row md:max-w-xl rounded-lg bg-white shadow-lg">
+                  <div className="flex flex-col justify-start">
+                    {/* <div className="flex flex-col grow md:flex-row md:max-w-xl rounded-lg bg-white shadow-lg">
                       <img
                         className=" w-full h-96 md:h-auto object-cover md:w-48 rounded-t-lg md:rounded-none md:rounded-l-lg"
                         src="https://images.unsplash.com/photo-1506704563811-e81bcede0640?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=874&q=80"
@@ -45,12 +67,46 @@ const Calendar = () => {
                         </ul>
                         <a href="#">View Exercise</a>
                       </div>
-                    </div>
+                    </div> */}
+                    {Object.keys(userExercises).map((key, idx) => {
+                      if (isSameDay(selectedDay, new Date(key))) {
+                        return (
+                          <div className="flex flex-col my-5 grow md:flex-row md:max-w-xl rounded-lg bg-white shadow-lg">
+                            <img
+                              className=" w-full h-96 md:h-auto object-cover md:w-48 rounded-t-lg md:rounded-none md:rounded-l-lg"
+                              src="https://images.unsplash.com/photo-1506704563811-e81bcede0640?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=874&q=80"
+                              alt=""
+                            />
+                            <div className="p-6 flex flex-col justify-start">
+                              <h5 className="text-gray-900 text-xl font-medium mb-2">
+                                {userExercises[key][idx].exercise.name}
+                              </h5>
+                              <ul className="text-gray-700 text-base mb-4">
+                                {userExercises[key].map((log) => {
+                                  return (
+                                    <li>
+                                      {log.reps} reps - {log.weight} KG
+                                    </li>
+                                  );
+                                })}
+                              </ul>
+                              <a href="#">View Exercise</a>
+                            </div>
+                          </div>
+                        );
+                      }
+                    })}
                   </div>
                 </div>
               </div>
               <div className="w-80 justify-self-end">
-                <DateCalendar />
+                <DateCalendar
+                  selectedDay={selectedDay}
+                  setSelectedDay={setSelectedDay}
+                  currentMonth={currentMonth}
+                  setCurrentMonth={setCurrentMonth}
+                  today={today}
+                />
               </div>
             </div>
             {/* /End replace */}

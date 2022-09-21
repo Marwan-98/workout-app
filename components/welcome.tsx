@@ -1,10 +1,27 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { EnvelopeIcon, PhoneIcon } from "@heroicons/react/20/solid";
+import axios from "axios";
 import Link from "next/link";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { useAppSelector } from "../redux/hooks";
+import { getUser } from "../redux/slices/userSlice";
 
 export default function Example() {
+  const dispatch = useDispatch();
   const user = useAppSelector((state) => state.user.user);
+  useEffect(() => {
+    console.log(user!.id);
+    axios
+      .get("/api/streak", {
+        headers: {
+          id: user!.id,
+        },
+      })
+      .then((res) => dispatch(getUser(res.data)));
+    return () => {};
+  }, []);
+
   return (
     <div className="border-b border-gray-200 bg-white px-4 py-5 sm:px-6">
       <div className="-ml-4 -mt-4 flex flex-wrap items-center justify-between sm:flex-nowrap">
