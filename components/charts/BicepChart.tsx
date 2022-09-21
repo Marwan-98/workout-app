@@ -7,7 +7,7 @@ function BicepChart() {
 
   const userData = {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
-    
+
     datasets: [
       {
         label: "Bicep Curl",
@@ -15,10 +15,49 @@ function BicepChart() {
         backgroundColor: ["white"],
         borderColor: "white",
         borderWidth: 2,
+        tension: 0.3,
       },
     ],
   };
-  return <Line data={userData} style={{ backgroundColor: "black" }} />;
+
+  const options = {
+    responsive: true,
+    scales: {
+      x: {
+        ticks: {
+          color: "white",
+          font:{
+            size:12
+          }
+        },
+      },
+      y: {
+        ticks: {
+          color: "white",
+          font:{
+            size:12
+          }
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        position: "top" as const,
+      },
+      title: {
+        display: false,
+        text: "Chart.js Line Chart",
+      },
+    },
+  };
+
+  return (
+    <Line
+      data={userData}
+      options={options}
+      style={{ backgroundColor: "black" }}
+    />
+  );
 }
 
 export default BicepChart;

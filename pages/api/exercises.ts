@@ -7,9 +7,10 @@ export default async function handler(
 ) {
   switch (req.method) {
     case "GET":
+      const { id } = req.headers;
       const exercises = await prisma.userLog.findMany({
         where: {
-          userId: 2,
+          userId: +id!,
         },
         include: {
           exercise: true,
