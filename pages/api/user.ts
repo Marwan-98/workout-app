@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import { prisma } from "./db";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const main = async ({
@@ -32,7 +32,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         height: +height,
       },
     });
-    console.log(user);
   };
   switch (req.method) {
     case "POST":

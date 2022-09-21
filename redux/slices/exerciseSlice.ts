@@ -20,9 +20,26 @@ interface Exercise {
   ];
 }
 
-const initialState: { exercises: Exercise[]; exercise: Exercise | null } = {
+export interface userExercise {
+  createdAt: string;
+  exercise: Exercise;
+  exerciseId: number;
+  id: number;
+  reps: number;
+  step: number;
+  userId: number;
+  weight: number;
+  workoutLineId: number;
+}
+
+const initialState: {
+  exercises: Exercise[];
+  exercise: Exercise | null;
+  userExercise: { [key: string]: userExercise[] };
+} = {
   exercises: [],
   exercise: null,
+  userExercise: {},
 };
 
 export const ExerciseSlice = createSlice({
@@ -35,10 +52,14 @@ export const ExerciseSlice = createSlice({
     getExercise: (state, action: PayloadAction<Exercise>) => {
       state.exercise = action.payload;
     },
+    getUserExercises: (state, action: PayloadAction<{}>) => {
+      state.userExercise = action.payload;
+    },
   },
 });
 
-export const { getExercises, getExercise } = ExerciseSlice.actions;
+export const { getExercises, getExercise, getUserExercises } =
+  ExerciseSlice.actions;
 
 export const exercises = (state: RootState) => state.exercise;
 

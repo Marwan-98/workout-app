@@ -13,10 +13,17 @@ const stats = [
 ];
 
 const Records = () => {
+  const user = useAppSelector((state) => state.user.user);
   const records = useAppSelector((state) => state.record);
   const dispatch = useDispatch();
   useEffect(() => {
-    axios.get("/api/log").then((res) => dispatch(getRecords(res.data)));
+    axios
+      .get("/api/log", {
+        headers: {
+          id: user!.id,
+        },
+      })
+      .then((res) => dispatch(getRecords(res.data)));
     return () => {};
   }, []);
   return (

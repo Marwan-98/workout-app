@@ -59,7 +59,8 @@ function Layout({
       if (res) {
         const { data }: PostgrestResponse<User> = await supabase
           .from("User")
-          .select("id, firstName, lastName, streak");
+          .select("id, firstName, lastName, streak, email")
+          .eq("email", res.email);
         if (data) dispatch(getUser(data[0]));
       } else {
         router.push("/signIn");
