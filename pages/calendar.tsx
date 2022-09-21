@@ -16,7 +16,7 @@ const Calendar = () => {
   let today = startOfToday();
   let [selectedDay, setSelectedDay] = useState(today);
   let [currentMonth, setCurrentMonth] = useState(format(today, "MMMM-yyyy"));
-
+  
   const user = useAppSelector((state) => state.user.user);
 
   useEffect(() => {
@@ -55,6 +55,7 @@ const Calendar = () => {
                 </div>
                 <div className="">
                   <div className="flex flex-col justify-start">
+
                     {Object.keys(userExercises).map((key, idx) => {
                       if (isSameDay(selectedDay, new Date(key))) {
                         return (
