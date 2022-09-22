@@ -6,25 +6,17 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../../redux/hooks";
-import { getExercises } from "../../redux/slices/exerciseSlice";
+import { Exercise, getExercises } from "../../redux/slices/exerciseSlice";
 import Loading from "../loading";
 
-const BrowseExercises = () => {
+const BrowseExercises = ({ allExercises }: { allExercises: Exercise[] }) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { workout } = router.query;
   const exercises = useAppSelector((state) => state.exercise.exercises);
   useEffect(() => {
-    if (router.isReady) {
-      axios
-        .get(`http://localhost:3000/api/workout/${workout}`, {
-          headers: {
-            id: +workout!,
-          },
-        })
-        .then((res) => dispatch(getExercises(res.data)));
-    }
-  }, [router.isReady]);
+    dispatch(getExercises(allExercises));
+  }, []);
   const images = [
     "../assets/photo1.jpg",
     "../assets/photo2.jpg",

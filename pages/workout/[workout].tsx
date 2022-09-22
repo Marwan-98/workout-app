@@ -1,10 +1,14 @@
 import axios from "axios";
+import { GetStaticProps } from "next";
+import { ParsedUrlQuery } from "querystring";
 import { useEffect } from "react";
 import BrowseExercises from "../../components/browse/browseExercises";
 
 import Layout from "../../components/layout";
+import { Exercise } from "../../redux/slices/exerciseSlice";
+import { Workout } from "../../redux/slices/workoutSlice";
 
-const BrowsWorkout = () => {
+const BrowsWorkout = ({ allExercises }: { allExercises: Exercise[] }) => {
   return (
     <>
       <Layout element={"Browse Workouts"}>
@@ -19,12 +23,48 @@ const BrowsWorkout = () => {
             </p>
           </div>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
-            <BrowseExercises />
+            <BrowseExercises allExercises={allExercises} />
           </div>
         </div>
       </Layout>
     </>
   );
+};
+
+export async function getStaticPaths() {
+  if (process.env.SKIP_BUILD_STATIC_GENERATION) {
+    return {
+      paths: [],
+      fallback: "blocking",
+    };
+  }
+
+  const res = await axios.get("http://localhost:3000/api/workouts");
+
+  const allWorkouts = await res.data;
+
+  const paths = allWorkouts.map((workout: Workout) => ({
+    params: { workout: String(workout.id) },
+  }));
+
+  return { paths, fallback: false };
+}
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const res = await axios.get(
+    `http://localhost:3000/api/workout/${params?.workout}`,
+    {
+      headers: {
+        id: +params!.workout!,
+      },
+    }
+  );
+  const allExercises = res.data;
+  return {
+    props: {
+      allExercises,
+    },
+  };
 };
 
 export default BrowsWorkout;

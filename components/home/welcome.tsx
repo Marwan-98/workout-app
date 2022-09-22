@@ -11,7 +11,6 @@ export default function Example() {
   const dispatch = useDispatch();
   const user = useAppSelector((state) => state.user.user);
   useEffect(() => {
-    console.log(user);
     axios
       .get("/api/streak", {
         headers: {

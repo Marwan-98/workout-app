@@ -11,7 +11,7 @@ interface WorkoutLine {
   workoutId: number;
 }
 
-interface Exercise {
+export interface Exercise {
   description: string;
   id: number;
   imageURL: string;

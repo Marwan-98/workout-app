@@ -61,7 +61,6 @@ function Layout({
           .from("User")
           .select("id, firstName, lastName, streak, email")
           .eq("email", res.email);
-        console.log(res);
         if (data) dispatch(getUser(data[0]));
       } else {
         router.push("/signIn");

@@ -5,10 +5,10 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../../redux/hooks";
-import { getWorkouts } from "../../redux/slices/workoutSlice";
+import { getWorkouts, Workout } from "../../redux/slices/workoutSlice";
 import Loading from "../loading";
 
-const BrowserWorkout = () => {
+const BrowserWorkout = ({ allWorkouts }: { allWorkouts: Workout[] }) => {
   const images = [
     "./assets/photo1.jpg",
     "./assets/photo2.jpg",
@@ -20,9 +20,7 @@ const BrowserWorkout = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3000/api/workouts")
-      .then((res) => dispatch(getWorkouts(res.data)));
+    dispatch(getWorkouts(allWorkouts));
   }, []);
 
   return (

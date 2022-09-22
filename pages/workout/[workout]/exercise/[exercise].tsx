@@ -1,4 +1,5 @@
 import axios from "axios";
+import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -8,9 +9,10 @@ import Logger from "../../../../components/exercise/logger/logger";
 import Layout from "../../../../components/layout";
 import Loading from "../../../../components/loading";
 import { useAppSelector } from "../../../../redux/hooks";
-import { getExercise } from "../../../../redux/slices/exerciseSlice";
+import { Exercise, getExercise } from "../../../../redux/slices/exerciseSlice";
 
-const Exercise = () => {
+const Exercise = ({ exerciseData }: { exerciseData: Exercise }) => {
+  console.log(exerciseData);
   const router = useRouter();
   const { exercise, workout } = router.query;
   const dispatch = useDispatch();
@@ -53,5 +55,37 @@ const Exercise = () => {
     </Layout>
   );
 };
+
+// export const getStaticPaths: GetStaticPaths = async () => {
+//   if (process.env.SKIP_BUILD_STATIC_GENERATION) {
+//     return {
+//       paths: [],
+//       fallback: "blocking",
+//     };
+//   }
+
+//   const res = await axios.get("http://localhost:3000/api/allExercises");
+
+//   const allExercises = await res.data;
+//   console.log(allExercises);
+//   const paths = allExercises.map((exercise: Exercise) => ({
+//     params: { exercise: String(exercise.id) },
+//   }));
+
+//   return { paths, fallback: false };
+// };
+
+// export const getStaticProps: GetStaticProps = async ({ params }) => {
+//   const res = await axios.get(
+//     `http://localhost:3000/api/exercise/${params?.exercise}`
+//   );
+//   const exerciseData = res.data;
+
+//   return {
+//     props: {
+//       exerciseData,
+//     },
+//   };
+// };
 
 export default Exercise;

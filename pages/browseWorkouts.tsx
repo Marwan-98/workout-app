@@ -1,8 +1,9 @@
 import BrowserWorkout from "../components/browse/BrowserWorkout";
 
 import Layout from "../components/layout";
+import { Workout } from "../redux/slices/workoutSlice";
 
-const BrowsWorkout = () => {
+const BrowsWorkout = ({ allWorkouts }: { allWorkouts: Workout[] }) => {
   return (
     <>
       <Layout element={"Browse Workouts"}>
@@ -17,12 +18,22 @@ const BrowsWorkout = () => {
             </p>
           </div>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
-            <BrowserWorkout />
+            <BrowserWorkout allWorkouts={allWorkouts} />
           </div>
         </div>
       </Layout>
     </>
   );
 };
+
+export async function getStaticProps() {
+  const res = await fetch("http://localhost:3000/api/workouts");
+  const allWorkouts = await res.json();
+  return {
+    props: {
+      allWorkouts,
+    },
+  };
+}
 
 export default BrowsWorkout;
