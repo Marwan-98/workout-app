@@ -11,7 +11,6 @@ export default async function handler(
         by: ["workoutId", "exerciseId"],
       });
       await prisma.$disconnect;
-      console.log(exercises);
       return res.status(200).json(exercises);
     default:
       break;

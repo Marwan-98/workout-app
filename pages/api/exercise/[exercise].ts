@@ -10,12 +10,12 @@ export default async function handler(
     case "GET":
       const exercise = await prisma.exercise.findUnique({
         where: {
-          id: 1,
+          id: +req.headers.id!,
         },
         include: {
           workoutLines: {
             where: {
-              workoutId: 1,
+              workoutId: +req.headers.workoutid!,
             },
           },
         },

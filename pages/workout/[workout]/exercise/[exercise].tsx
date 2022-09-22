@@ -12,26 +12,11 @@ import { useAppSelector } from "../../../../redux/hooks";
 import { Exercise, getExercise } from "../../../../redux/slices/exerciseSlice";
 
 const Exercise = ({ exerciseData }: { exerciseData: Exercise }) => {
-  const router = useRouter();
-  const { exercise, workout } = router.query;
   const dispatch = useDispatch();
   let findExercise = useAppSelector((state) => state.exercise.exercise);
 
   useEffect(() => {
     dispatch(getExercise(exerciseData));
-    // if (router.isReady) {
-    //   axios
-    //     .get(`http://localhost:3000/api/exercise/${exercise}`, {
-    //       headers: {
-    //         id: String(exercise),
-    //         workoutId: String(workout),
-    //       },
-    //     })
-    //     .then((res) => {
-    //       dispatch(getExercise(res.data));
-    //     })
-    //     .catch((err) => console.log(err));
-    // }
   }, []);
 
   return (
@@ -80,15 +65,28 @@ export async function getStaticPaths() {
   return { paths, fallback: false };
 }
 
-// console.log(getStaticPaths());
-
-export async function getStaticProps() {
-  const res = await axios.get(`http://localhost:3000/api/exercise/1`);
+export async function getStaticProps({
+  params,
+}: {
+  params: {
+    workout: string;
+    exercise: string;
+  };
+}) {
+  const res = await axios.get(
+    `http://localhost:3000/api/exercise/${params.exercise}`,
+    {
+      headers: {
+        id: params.exercise,
+        workoutId: params.workout,
+      },
+    }
+  );
   const exerciseData = res.data;
 
   return {
     props: {
-      data: { id: 1 },
+      exerciseData,
     },
   };
 }
