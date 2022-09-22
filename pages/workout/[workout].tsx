@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect } from "react";
-import BrowseExercises from "../../components/browseExercises";
+import BrowseExercises from "../../components/browse/browseExercises";
 
 import Layout from "../../components/layout";
 

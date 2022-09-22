@@ -2,21 +2,14 @@
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto";
 import { CategoryScale } from "chart.js";
-import {
-  add,
-  format,
-  getMonth,
-  getYear,
-  startOfMonth,
-  startOfToday,
-  sub,
-} from "date-fns";
+import { format, startOfMonth, startOfToday, sub } from "date-fns";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useAppSelector } from "../../redux/hooks";
+import Loading from "../loading";
 
-function SquatChart({
+function Chart({
   name,
   id,
   backgroundColor,
@@ -36,32 +29,32 @@ function SquatChart({
   }
   useEffect(() => {
     if (router.isReady) {
-      for (let i = 0; i < prevMonths.length; i++) {
-        axios
-          .get("/api/record", {
-            headers: {
-              id,
-              userId: user!.id,
-              year: getYear(today),
-              month: format(new Date(`${prevMonths[i]} 1`), "MM"),
-            },
-          })
-          .then((res) => {
-            res.data.length == 0
-              ? setWeightData((weightData) => [...weightData, 0])
-              : setWeightData((weightData) => [
-                  ...weightData,
-                  res.data[0]._avg.weight,
-                ]);
-          });
-      }
+      axios
+        .get("/api/record", {
+          headers: {
+            id,
+            userId: user!.id,
+            prevMonths: prevMonths.join(","),
+          },
+        })
+        .then((res) => {
+          let dataArr: number[] = [];
+          for (let i = 0; i < res.data.length; i++) {
+            res.data[i][0]
+              ? (dataArr[i] = res.data[i][0]._avg.weight)
+              : (dataArr[i] = 0);
+          }
+          setWeightData((weightData) => [...weightData, ...dataArr]);
+        });
     }
   }, [router.isReady]);
+
   useEffect(() => {
     if (weightData.length === prevMonths.length) {
       setLoading(false);
     }
   }, [weightData]);
+
   ChartJS?.register(CategoryScale);
   const userData = {
     labels: prevMonths,
@@ -108,10 +101,10 @@ function SquatChart({
     },
   };
   return loading ? (
-    <h1>Loading</h1>
+    <Loading type="chart" />
   ) : (
     <Line data={userData} options={options} style={{ backgroundColor }} />
   );
 }
 
-export default SquatChart;
+export default Chart;

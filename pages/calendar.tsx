@@ -10,7 +10,6 @@ import { getUserExercises, userExercise } from "../redux/slices/exerciseSlice";
 import { groupBy } from "lodash";
 
 const Calendar = () => {
-  // new Date("2022-9-20 17:57:55")
   const dispatch = useDispatch();
   const userExercises = useAppSelector((state) => state.exercise.userExercise);
   let today = startOfToday();

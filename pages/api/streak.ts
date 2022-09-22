@@ -5,6 +5,8 @@ import {
   differenceInHours,
   differenceInMinutes,
   format,
+  formatISO,
+  intlFormat,
   isSameDay,
 } from "date-fns";
 import { prisma } from "./db";
@@ -31,22 +33,21 @@ export default async function handler(
         },
       });
 
-      if (isSameDay(today, userLogs[0].createdAt)) {
+      if (
+        differenceInHours(today, new Date(formatISO(userLogs[0]?.createdAt))) <
+        24
+      ) {
         streak++;
         while (isStreak && userLogs[idx + 1]) {
-          const date = new Date(
-            userLogs[idx + 1].createdAt.toDateString().split("T")[0]
-          );
+          const date = new Date(formatISO(userLogs[idx].createdAt));
+          const nextDate = new Date(formatISO(userLogs[idx + 1].createdAt));
           if (
-            !isSameDay(userLogs[idx].createdAt, date) &&
-            differenceInHours(
-              userLogs[idx].createdAt,
-              userLogs[idx + 1].createdAt
-            ) < 24
+            !isSameDay(date, nextDate) &&
+            differenceInHours(date, nextDate) < 24
           ) {
             streak++;
             idx++;
-          } else if (isSameDay(userLogs[idx].createdAt, date)) {
+          } else if (isSameDay(date, nextDate)) {
             idx++;
           } else {
             isStreak = false;

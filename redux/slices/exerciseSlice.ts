@@ -34,11 +34,11 @@ export interface userExercise {
 }
 
 const initialState: {
-  exercises: Exercise[];
+  exercises: Exercise[] | null;
   exercise: Exercise | null;
   userExercise: { [key: string]: userExercise[] };
 } = {
-  exercises: [],
+  exercises: null,
   exercise: null,
   userExercise: {},
 };
@@ -50,7 +50,7 @@ export const ExerciseSlice = createSlice({
     getExercises: (state, action: PayloadAction<Exercise[]>) => {
       state.exercises = action.payload;
     },
-    getExercise: (state, action: PayloadAction<Exercise>) => {
+    getExercise: (state, action: PayloadAction<Exercise | null>) => {
       state.exercise = action.payload;
     },
     getUserExercises: (state, action: PayloadAction<{}>) => {

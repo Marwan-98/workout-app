@@ -1,6 +1,4 @@
-import axios from "axios";
-import { useEffect } from "react";
-import BrowserWorkout from "../components/BrowserWorkout";
+import BrowserWorkout from "../components/browse/BrowserWorkout";
 
 import Layout from "../components/layout";
 

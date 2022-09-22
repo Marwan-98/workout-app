@@ -1,8 +1,5 @@
 import Layout from "../components/layout";
-import SquatChart from "../components/charts/SquatChart";
-import BicepChart from "../components/charts/BicepChart";
-import Chart3 from "../components/charts/Chart3";
-import Chart4 from "../components/charts/Chart4";
+import Chart from "../components/charts/chart";
 
 const Progress = () => {
   const averages = [
@@ -16,7 +13,7 @@ const Progress = () => {
         <div className=" mx-2 my-5 grid grid-cols-2 gap-5">
           {averages.map((average) => (
             <div className="" key={average.id}>
-              <SquatChart
+              <Chart
                 name={average.name}
                 id={average.id}
                 backgroundColor={average.backgroundColor}

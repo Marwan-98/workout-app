@@ -2,6 +2,7 @@ import axios from "axios";
 import { useFormik } from "formik";
 import { createClient } from "@supabase/supabase-js";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_DATABASE_NAME!,
@@ -17,6 +18,8 @@ async function signUpWithEmail(email: string, password: string) {
   }
 }
 export default function SignUp() {
+  const router = useRouter();
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -28,9 +31,13 @@ export default function SignUp() {
       age: "",
     },
     onSubmit: (values) => {
-      signUpWithEmail(values.email, values.password).then(() => {
-        axios.post("http://localhost:3000/api/user", values);
-      });
+      signUpWithEmail(values.email, values.password)
+        .then(() => {
+          axios.post("http://localhost:3000/api/user", values);
+        })
+        .then(() => {
+          router.push("/home");
+        });
     },
   });
   return (

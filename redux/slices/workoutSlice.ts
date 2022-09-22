@@ -7,14 +7,18 @@ interface Workout {
   name: string;
 }
 
-const initialState: Workout[] = [];
+const initialState: {
+  workouts: Workout[] | null;
+} = {
+  workouts: null,
+};
 
 export const workoutSlice = createSlice({
   name: "workouts",
   initialState,
   reducers: {
     getWorkouts: (state, action: PayloadAction<Workout[]>) => {
-      return action.payload;
+      state.workouts = action.payload;
     },
   },
 });

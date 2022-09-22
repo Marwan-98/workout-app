@@ -61,6 +61,7 @@ function Layout({
           .from("User")
           .select("id, firstName, lastName, streak, email")
           .eq("email", res.email);
+        console.log(res);
         if (data) dispatch(getUser(data[0]));
       } else {
         router.push("/signIn");
@@ -267,7 +268,7 @@ function Layout({
             </div>
           </div>
 
-          <main className="flex-1 y">{user ? children : <h1>Loading</h1>}</main>
+          <main className="flex-1 y">{user ? children : <></>}</main>
         </div>
       </div>
     </div>

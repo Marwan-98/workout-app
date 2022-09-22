@@ -1,5 +1,4 @@
 import { createClient } from "@supabase/supabase-js";
-import axios from "axios";
 import { useFormik } from "formik";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -13,7 +12,6 @@ async function signInWithEmail(email: string, password: string) {
   try {
     const { user, error } = await supabase.auth.signIn({ email, password });
     if (error) throw error;
-    console.log(user);
   } catch (err) {
     console.log(err);
   }

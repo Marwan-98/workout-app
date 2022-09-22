@@ -1,9 +1,7 @@
-import Welcome from "../components/welcome";
-import Records from "../components/records";
-import TimeLine from "../components/timeLine";
+import Welcome from "../components/home/welcome";
+import Records from "../components/home/records";
+import TimeLine from "../components/home/timeLine";
 import Layout from "../components/layout";
-import axios from "axios";
-import { useEffect } from "react";
 
 export default function Home() {
   return (
