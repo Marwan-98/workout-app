@@ -7,7 +7,9 @@ export default async function handler(
 ) {
   switch (req.method) {
     case "GET":
-      const exercises = await prisma.exercise.findMany();
+      const exercises = await prisma.workoutLine.groupBy({
+        by: ["workoutId", "exerciseId"],
+      });
       await prisma.$disconnect;
       console.log(exercises);
       return res.status(200).json(exercises);

@@ -12,27 +12,27 @@ import { useAppSelector } from "../../../../redux/hooks";
 import { Exercise, getExercise } from "../../../../redux/slices/exerciseSlice";
 
 const Exercise = ({ exerciseData }: { exerciseData: Exercise }) => {
-  console.log(exerciseData);
   const router = useRouter();
   const { exercise, workout } = router.query;
   const dispatch = useDispatch();
   let findExercise = useAppSelector((state) => state.exercise.exercise);
 
   useEffect(() => {
-    if (router.isReady) {
-      axios
-        .get(`http://localhost:3000/api/exercise/${exercise}`, {
-          headers: {
-            id: String(exercise),
-            workoutId: String(workout),
-          },
-        })
-        .then((res) => {
-          dispatch(getExercise(res.data));
-        })
-        .catch((err) => console.log(err));
-    }
-  }, [router.isReady]);
+    dispatch(getExercise(exerciseData));
+    // if (router.isReady) {
+    //   axios
+    //     .get(`http://localhost:3000/api/exercise/${exercise}`, {
+    //       headers: {
+    //         id: String(exercise),
+    //         workoutId: String(workout),
+    //       },
+    //     })
+    //     .then((res) => {
+    //       dispatch(getExercise(res.data));
+    //     })
+    //     .catch((err) => console.log(err));
+    // }
+  }, []);
 
   return (
     <Layout element="Browse Workouts">
@@ -56,36 +56,41 @@ const Exercise = ({ exerciseData }: { exerciseData: Exercise }) => {
   );
 };
 
-// export const getStaticPaths: GetStaticPaths = async () => {
-//   if (process.env.SKIP_BUILD_STATIC_GENERATION) {
-//     return {
-//       paths: [],
-//       fallback: "blocking",
-//     };
-//   }
+export async function getStaticPaths() {
+  if (process.env.SKIP_BUILD_STATIC_GENERATION) {
+    return {
+      paths: [],
+      fallback: "blocking",
+    };
+  }
 
-//   const res = await axios.get("http://localhost:3000/api/allExercises");
+  const res = await axios.get("http://localhost:3000/api/allExercises");
 
-//   const allExercises = await res.data;
-//   console.log(allExercises);
-//   const paths = allExercises.map((exercise: Exercise) => ({
-//     params: { exercise: String(exercise.id) },
-//   }));
+  const allExercises = res.data;
+  const paths = allExercises.map(
+    (exercise: { workoutId: number; exerciseId: number }) => {
+      return {
+        params: {
+          workout: String(exercise.workoutId),
+          exercise: String(exercise.exerciseId),
+        },
+      };
+    }
+  );
+  return { paths, fallback: false };
+}
 
-//   return { paths, fallback: false };
-// };
+// console.log(getStaticPaths());
 
-// export const getStaticProps: GetStaticProps = async ({ params }) => {
-//   const res = await axios.get(
-//     `http://localhost:3000/api/exercise/${params?.exercise}`
-//   );
-//   const exerciseData = res.data;
+export async function getStaticProps() {
+  const res = await axios.get(`http://localhost:3000/api/exercise/1`);
+  const exerciseData = res.data;
 
-//   return {
-//     props: {
-//       exerciseData,
-//     },
-//   };
-// };
+  return {
+    props: {
+      data: { id: 1 },
+    },
+  };
+}
 
 export default Exercise;
