@@ -3,6 +3,8 @@ import workoutReducer from "./slices/workoutSlice";
 import exerciseReducer from "./slices/exerciseSlice";
 import recordsSlice from "./slices/recordsSlice";
 import userSlice from "./slices/userSlice";
+import weightSlice from "./slices/weightSlice";
+import repSlice from "./slices/repSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +12,8 @@ export const store = configureStore({
     exercise: exerciseReducer,
     record: recordsSlice,
     user: userSlice,
+    weightData: weightSlice,
+    repData: repSlice,
   },
 });
 

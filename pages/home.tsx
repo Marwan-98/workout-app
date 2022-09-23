@@ -1,6 +1,5 @@
 import Welcome from "../components/home/welcome";
 import Records from "../components/home/records";
-import TimeLine from "../components/home/timeLine";
 import Layout from "../components/layout";
 
 export default function Home() {
