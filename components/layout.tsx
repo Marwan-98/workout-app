@@ -50,25 +50,32 @@ function Layout({
   );
 
   const auth = async () => {
-    const getUser = supabase.auth.user();
-    return getUser;
+    const session = supabase.auth.session();
+    return session;
   };
 
   useEffect(() => {
     auth().then(async (res) => {
       if (res) {
-        const { data }: PostgrestResponse<User> = await supabase
-          .from("User")
-          .select("id, firstName, lastName, streak, email")
-          .eq("email", res.email);
-        if (data) dispatch(getUser(data[0]));
+        if (!user) {
+          const { user, error } = await supabase.auth.api.getUser(
+            res.access_token
+          );
+          if (user) {
+            const { data }: PostgrestResponse<User> = await supabase
+              .from("User")
+              .select("id, firstName, lastName, streak, email")
+              .eq("email", user.email);
+            if (data) dispatch(getUser(data[0]));
+          }
+        }
       } else {
         router.push("/signIn");
       }
     });
   }, []);
 
-  return (
+  return user ? (
     <div>
       <Transition.Root show={sidebarOpen} as={Fragment}>
         <Dialog
@@ -267,10 +274,12 @@ function Layout({
             </div>
           </div>
 
-          <main className="flex-1 y">{user ? children : <></>}</main>
+          <main className="flex-1 y">{children}</main>
         </div>
       </div>
     </div>
+  ) : (
+    <></>
   );
 }
 
