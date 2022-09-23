@@ -17,10 +17,6 @@ export default function Home() {
             <div className="py-4">
               <Records />
             </div>
-            <div className="py-4">
-              <TimeLine />
-            </div>
-            {/* /End replace */}
           </div>
         </div>
       </Layout>

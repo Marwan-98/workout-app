@@ -32,19 +32,21 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         height: +height,
       },
     });
+    return user;
   };
   switch (req.method) {
     case "POST":
       const { firstName, lastName, email, password, age, weight, height } =
         req.body;
       main({ firstName, lastName, email, password, age, weight, height })
-        .then(async () => {
+        .then(async (user) => {
           await prisma.$disconnect();
+          return res.status(200).json(user);
         })
         .catch(async (e) => {
           console.error(e);
           await prisma.$disconnect();
-          process.exit(1);
+          return res.status(400).json({ message: e });
         });
       break;
     default:
