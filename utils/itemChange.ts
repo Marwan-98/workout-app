@@ -1,7 +1,6 @@
 import { AnyAction } from "@reduxjs/toolkit";
 import { Dispatch } from "react";
-import { setRepData } from "../redux/slices/repSlice";
-import { setWeightData } from "../redux/slices/weightSlice";
+import { setRepData, setWeightData } from "../redux/slices/exerciseTableSlice";
 
 export const itemChange = (
   e: React.FormEvent<HTMLInputElement>,

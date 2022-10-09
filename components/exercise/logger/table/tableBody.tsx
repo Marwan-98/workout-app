@@ -13,8 +13,7 @@ const TableBody = ({
 
   let findExercise = useAppSelector((state) => state.exercise.exercise);
 
-  const weightData = useAppSelector((state) => state.weightData.weightData);
-  const repData = useAppSelector((state) => state.repData.repData);
+  const tableData = useAppSelector((state) => state.tableData.tableData);
 
   return (
     <tbody className="divide-y divide-gray-200">
@@ -34,7 +33,7 @@ const TableBody = ({
                 id="weight"
                 className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 placeholder={`${findExercise?.workoutLines[0].recweights}`}
-                value={String(weightData[idx]?.weightInputValue)}
+                value={String(tableData[idx]?.weightInputValue)}
                 onChange={(e) => {
                   if (/^[0-9]*$/.test((e.target as HTMLInputElement).value)) {
                     itemChange(e, idx, "w", dispatch);
@@ -52,7 +51,7 @@ const TableBody = ({
                 id="reps"
                 className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 placeholder={`${findExercise?.workoutLines[0].redcreps}`}
-                value={String(repData[idx]?.repInputValue)}
+                value={String(tableData[idx]?.repInputValue)}
                 onChange={(e) => {
                   if (/^[0-9]*$/.test((e.target as HTMLInputElement).value)) {
                     itemChange(e, idx, "r", dispatch);
@@ -71,8 +70,8 @@ const TableBody = ({
                     e,
                     idx,
                     +exercise!,
-                    +repData[idx].repInputValue,
-                    +weightData[idx].weightInputValue,
+                    +tableData[idx].repInputValue,
+                    +tableData[idx].weightInputValue,
                     findExercise!.workoutLines[0].id,
                     user!.id,
                     dispatch

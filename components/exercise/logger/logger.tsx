@@ -3,8 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../../../redux/hooks";
-import { createRepData } from "../../../redux/slices/repSlice";
-import { createWeightData } from "../../../redux/slices/weightSlice";
+import { createTableData } from "../../../redux/slices/exerciseTableSlice";
 import TableBody from "./table/tableBody";
 import TableHead from "./table/tableHead";
 
@@ -25,8 +24,7 @@ const Logger = () => {
   };
 
   useEffect(() => {
-    dispatch(createWeightData(findExercise!.workoutLines[0].recsets));
-    dispatch(createRepData(findExercise!.workoutLines[0].recsets));
+    dispatch(createTableData(findExercise!.workoutLines[0].recsets));
   }, []);
 
   return (
