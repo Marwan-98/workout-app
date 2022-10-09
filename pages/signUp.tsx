@@ -2,21 +2,42 @@ import axios from "axios";
 import { useFormik } from "formik";
 import { createClient } from "@supabase/supabase-js";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { XCircleIcon } from "@heroicons/react/20/solid";
+import { useState } from "react";
+import { useAppSelector } from "../redux/hooks";
+import { useDispatch } from "react-redux";
+import { getUser } from "../redux/slices/userSlice";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_DATABASE_NAME!,
   process.env.NEXT_PUBLIC_DATABASE_ANON_KEY!
 );
 
-async function signUpWithEmail(email: string, password: string) {
-  try {
-    const { user, error } = await supabase.auth.signUp({ email, password });
-    if (error) throw error;
-  } catch (err) {
-    console.log(err);
-  }
-}
 export default function SignUp() {
+  const router = useRouter();
+  const [visible, setVisible] = useState(false);
+  const [error, setError] = useState("");
+  const user = useAppSelector((state) => state.user.user);
+  const dispatch = useDispatch();
+
+  async function signUpWithEmail(email: string, password: string) {
+    try {
+      const { user, error } = await supabase.auth.signUp({ email, password });
+      if (error) throw error;
+      return user;
+    } catch (error) {
+      let message = "Unknown Error";
+      if (error instanceof Error) message = error.message;
+      setError(message);
+      setVisible(true);
+      setTimeout(() => {
+        setVisible(false);
+      }, 3000);
+      throw error;
+    }
+  }
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -28,13 +49,41 @@ export default function SignUp() {
       age: "",
     },
     onSubmit: (values) => {
-      signUpWithEmail(values.email, values.password).then(() => {
-        axios.post("http://localhost:3000/api/user", values);
-      });
+      signUpWithEmail(values.email, values.password)
+        .then(() => {
+          axios
+            .post("http://localhost:3000/api/user", values)
+            .then((res) => {
+              dispatch(getUser(res.data));
+            })
+            .finally(() => router.push("/home"));
+        })
+        .catch((err) => console.log(err));
     },
   });
   return (
-    <div className="h-screen bg-white">
+    <div className="h-screen bg-white relative ">
+      <div
+        className={`rounded-md bg-red-50 p-4 fixed top-10 left-10 ${
+          visible ? "visible" : "invisible"
+        }`}
+      >
+        <div className="flex">
+          <div className="flex-shrink-0">
+            <XCircleIcon className="h-5 w-5 text-red-400" aria-hidden="true" />
+          </div>
+          <div className="ml-3">
+            <h3 className="text-sm font-medium text-red-800">
+              There was an error with your submission
+            </h3>
+            <div className="mt-2 text-sm text-red-700">
+              <ul role="list" className="list-disc space-y-1 pl-5">
+                <li>{error}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="flex min-h-full">
         <div className="flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
           <div className="mx-auto w-full max-w-sm lg:w-96">

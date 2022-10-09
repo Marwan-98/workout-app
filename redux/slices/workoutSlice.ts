@@ -2,19 +2,23 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 
-interface Workout {
+export interface Workout {
   id: number;
   name: string;
 }
 
-const initialState: Workout[] = [];
+const initialState: {
+  workouts: Workout[] | null;
+} = {
+  workouts: null,
+};
 
 export const workoutSlice = createSlice({
   name: "workouts",
   initialState,
   reducers: {
     getWorkouts: (state, action: PayloadAction<Workout[]>) => {
-      return action.payload;
+      state.workouts = action.payload;
     },
   },
 });

@@ -4,14 +4,13 @@ import axios from "axios";
 import Link from "next/link";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { useAppSelector } from "../redux/hooks";
-import { getUser } from "../redux/slices/userSlice";
+import { useAppSelector } from "../../redux/hooks";
+import { getUser } from "../../redux/slices/userSlice";
 
 export default function Example() {
   const dispatch = useDispatch();
   const user = useAppSelector((state) => state.user.user);
   useEffect(() => {
-    console.log(user!.id);
     axios
       .get("/api/streak", {
         headers: {
@@ -19,7 +18,6 @@ export default function Example() {
         },
       })
       .then((res) => dispatch(getUser(res.data)));
-    return () => {};
   }, []);
 
   return (

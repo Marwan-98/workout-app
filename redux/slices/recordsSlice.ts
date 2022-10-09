@@ -7,14 +7,16 @@ interface Record {
   weight: number;
 }
 
-const initialState: Record[] = [];
+const initialState: { records: Record[] | null } = {
+  records: null,
+};
 
 const recordSlice = createSlice({
   name: "record",
   initialState,
   reducers: {
     getRecords: (state, action: PayloadAction<Record[]>) => {
-      return action.payload;
+      state.records = action.payload;
     },
   },
 });
