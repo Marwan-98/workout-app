@@ -55,7 +55,7 @@ export default function Example() {
             type="button"
             className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-black px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-black-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           >
-            <span>Start Today's Workout</span>
+            <span>Start Today&apos;s Workout</span>
           </button>
         </div>
       </div>
