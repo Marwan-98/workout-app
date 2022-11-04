@@ -4,25 +4,25 @@ const TableHead = () => {
       <tr>
         <th
           scope="col"
-          className="px-6 py-3 text-xs text-center font-bold text-left text-gray-500 uppercase "
+          className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
         >
           #
         </th>
         <th
           scope="col"
-          className="px-6 py-3 text-xs text-center font-bold text-left text-gray-500 uppercase "
+          className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
         >
           Weight (KG)
         </th>
         <th
           scope="col"
-          className="px-6 py-3 text-xs text-center font-bold text-left text-gray-500 uppercase "
+          className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
         >
           Reps
         </th>
         <th
           scope="col"
-          className="px-6 py-3 text-xs text-center font-bold text-right text-gray-500 uppercase "
+          className="px-6 py-3 text-xs font-bold text-right text-gray-500 uppercase "
         ></th>
       </tr>
     </thead>

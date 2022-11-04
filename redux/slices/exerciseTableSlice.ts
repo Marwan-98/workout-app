@@ -2,13 +2,10 @@ import { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
-interface weightInput {
-  [key: string]: { weightInputValue: string; repInputValue: string };
-}
-
-const initialState: { tableData: weightInput[] } = {
+const initialState: { tableData: Record<string, string>[] } = {
   tableData: [],
 };
+
 const exerciseTableSlice = createSlice({
   name: "weightInput",
   initialState,
@@ -22,9 +19,9 @@ const exerciseTableSlice = createSlice({
       if (input) input.repInputValue = action.payload[0];
     },
     createTableData: (state, action: PayloadAction<number>) => {
-      let arr: weightInput[] = [];
+      let arr: Record<string, string>[] = [];
       Array.from({ length: action.payload }).map((rep, idx) => {
-        arr[idx] = { weightInputValue: "", repInputValue: "" };
+        arr[idx] = {};
       });
       state.tableData = arr;
     },

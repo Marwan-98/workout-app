@@ -26,10 +26,10 @@ const Exercise = ({ exercise }: { exercise: Exercise }) => {
           <div className="flex justify-around mb-20">
             <ExerciseVideo videoURL={findExercise?.videoURL} />
             <ExerciseInfo
-              name={findExercise?.name}
-              recsets={findExercise?.workoutLines[0].recsets}
-              recreps={findExercise?.workoutLines[0].redcreps}
-              description={findExercise?.description}
+              name={findExercise.name}
+              recsets={findExercise.workoutLines[0].recsets}
+              recreps={findExercise.workoutLines[0].redcreps}
+              description={findExercise.description}
             />
           </div>
           <Logger />
