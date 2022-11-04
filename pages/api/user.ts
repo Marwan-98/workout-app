@@ -3,7 +3,10 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
 import { prisma } from "./db";
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const main = async ({
     firstName,
     lastName,
@@ -48,6 +51,15 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
           await prisma.$disconnect();
           return res.status(400).json({ message: e });
         });
+      break;
+    case "GET":
+      const { mail } = req.headers;
+      const findUser = await prisma.user.findUnique({
+        where: {
+          email: String(mail),
+        },
+      });
+      return res.status(200).json(findUser);
       break;
     default:
       break;

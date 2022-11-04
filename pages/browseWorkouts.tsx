@@ -3,6 +3,8 @@ import BrowserWorkout from "../components/browse/BrowserWorkout";
 import Layout from "../components/layout";
 import { Workout } from "../redux/slices/workoutSlice";
 
+import { prisma } from "./api/db";
+
 const BrowsWorkout = ({ allWorkouts }: { allWorkouts: Workout[] }) => {
   return (
     <>
@@ -27,8 +29,9 @@ const BrowsWorkout = ({ allWorkouts }: { allWorkouts: Workout[] }) => {
 };
 
 export async function getStaticProps() {
-  const res = await fetch("http://localhost:3000/api/workouts");
-  const allWorkouts = await res.json();
+  const workouts = await prisma.workout.findMany();
+  await prisma.$disconnect;
+  const allWorkouts = workouts;
   return {
     props: {
       allWorkouts,

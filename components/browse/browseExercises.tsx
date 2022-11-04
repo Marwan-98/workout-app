@@ -9,13 +9,13 @@ import { useAppSelector } from "../../redux/hooks";
 import { Exercise, getExercises } from "../../redux/slices/exerciseSlice";
 import Loading from "../loading";
 
-const BrowseExercises = ({ allExercises }: { allExercises: Exercise[] }) => {
+const BrowseExercises = ({ exercises }: { exercises: Exercise[] }) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { workout } = router.query;
-  const exercises = useAppSelector((state) => state.exercise.exercises);
+  const allExercises = useAppSelector((state) => state.exercise.exercises);
   useEffect(() => {
-    dispatch(getExercises(allExercises));
+    dispatch(getExercises(exercises));
   }, []);
   const images = [
     "../assets/photo1.jpg",
@@ -26,10 +26,10 @@ const BrowseExercises = ({ allExercises }: { allExercises: Exercise[] }) => {
   return (
     <div className="py-4 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
       {/* <div className="h-96 rounded-lg border-4 border-dashed border-gray-200" /> */}
-      {!exercises ? (
+      {!allExercises ? (
         <Loading type="image" />
       ) : (
-        exercises.map((exercise, idx) => (
+        allExercises.map((exercise, idx) => (
           <Link href={`${workout}/exercise/${exercise.id}`} key={Math.random()}>
             <div
               key={idx}

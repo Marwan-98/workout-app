@@ -1,6 +1,6 @@
 import axios from "axios";
 import { GetStaticPaths, GetStaticProps } from "next";
-import { useRouter } from "next/router";
+import { prisma } from "../../../api/db";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import ExerciseInfo from "../../../../components/exercise/info/exerciseInfo";
@@ -11,12 +11,12 @@ import Loading from "../../../../components/loading";
 import { useAppSelector } from "../../../../redux/hooks";
 import { Exercise, getExercise } from "../../../../redux/slices/exerciseSlice";
 
-const Exercise = ({ exerciseData }: { exerciseData: Exercise }) => {
+const Exercise = ({ exercise }: { exercise: Exercise }) => {
   const dispatch = useDispatch();
   let findExercise = useAppSelector((state) => state.exercise.exercise);
 
   useEffect(() => {
-    dispatch(getExercise(exerciseData));
+    dispatch(getExercise(exercise));
   }, []);
 
   return (
@@ -49,10 +49,13 @@ export async function getStaticPaths() {
     };
   }
 
-  const res = await axios.get("http://localhost:3000/api/allExercises");
+  const exercises = await prisma.workoutLine.groupBy({
+    by: ["workoutId", "exerciseId"],
+  });
 
-  const allExercises = res.data;
-  const paths = allExercises.map(
+  prisma.$disconnect;
+
+  const paths = exercises.map(
     (exercise: { workoutId: number; exerciseId: number }) => {
       return {
         params: {
@@ -73,20 +76,24 @@ export async function getStaticProps({
     exercise: string;
   };
 }) {
-  const res = await axios.get(
-    `http://localhost:3000/api/exercise/${params.exercise}`,
-    {
-      headers: {
-        id: params.exercise,
-        workoutId: params.workout,
+  const exercise = await prisma.exercise.findUnique({
+    where: {
+      id: +params.exercise,
+    },
+    include: {
+      workoutLines: {
+        where: {
+          workoutId: +params.workout,
+        },
       },
-    }
-  );
-  const exerciseData = res.data;
+    },
+  });
+
+  prisma.$disconnect;
 
   return {
     props: {
-      exerciseData,
+      exercise,
     },
   };
 }

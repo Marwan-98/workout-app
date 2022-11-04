@@ -15,6 +15,7 @@ import { useAppSelector } from "../redux/hooks";
 import { useDispatch } from "react-redux";
 import { getUser } from "../redux/slices/userSlice";
 import { User } from "../redux/slices/userSlice";
+import axios from "axios";
 
 const navigation = [
   { name: "Dashboard", href: "/home", icon: HomeIcon },
@@ -62,11 +63,13 @@ function Layout({
             res.access_token
           );
           if (user) {
-            const { data }: PostgrestResponse<User> = await supabase
-              .from("User")
-              .select("id, firstName, lastName, streak, email")
-              .eq("email", user.email);
-            if (data) dispatch(getUser(data[0]));
+            axios
+              .get("/api/user", {
+                headers: {
+                  mail: user.email!,
+                },
+              })
+              .then((res) => dispatch(getUser(res.data)));
           }
         }
       } else {
