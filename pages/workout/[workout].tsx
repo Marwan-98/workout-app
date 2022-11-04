@@ -8,7 +8,9 @@ import Layout from "../../components/layout";
 import { Exercise } from "../../redux/slices/exerciseSlice";
 import { Workout } from "../../redux/slices/workoutSlice";
 
-const BrowsWorkout = ({ allExercises }: { allExercises: Exercise[] }) => {
+import { prisma } from "../api/db";
+
+const BrowsWorkout = ({ exercises }: { exercises: Exercise[] }) => {
   return (
     <>
       <Layout element={"Browse Workouts"}>
@@ -23,14 +25,13 @@ const BrowsWorkout = ({ allExercises }: { allExercises: Exercise[] }) => {
             </p>
           </div>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
-            <BrowseExercises allExercises={allExercises} />
+            <BrowseExercises exercises={exercises} />
           </div>
         </div>
       </Layout>
     </>
   );
 };
-
 export async function getStaticPaths() {
   if (process.env.SKIP_BUILD_STATIC_GENERATION) {
     return {
@@ -39,30 +40,34 @@ export async function getStaticPaths() {
     };
   }
 
-  const res = await axios.get("http://localhost:3000/api/workouts");
+  const workouts = await prisma.workout.findMany();
 
-  const allWorkouts = await res.data;
-
-  const paths = allWorkouts.map((workout: Workout) => ({
+  const paths = workouts.map((workout: Workout) => ({
     params: { workout: String(workout.id) },
   }));
+
+  prisma.$disconnect;
 
   return { paths, fallback: false };
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const res = await axios.get(
-    `http://localhost:3000/api/workout/${params?.workout}`,
-    {
-      headers: {
-        id: +params!.workout!,
-      },
-    }
-  );
-  const allExercises = res.data;
+  const workout = await prisma.workoutLine.findMany({
+    where: {
+      workoutId: +params!.workout!,
+    },
+    include: {
+      exercise: true,
+    },
+  });
+
+  const exercises = workout.map((workout) => workout.exercise);
+
+  prisma.$disconnect;
+
   return {
     props: {
-      allExercises,
+      exercises,
     },
   };
 };
