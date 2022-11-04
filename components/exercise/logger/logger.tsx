@@ -32,7 +32,7 @@ const Logger = () => {
       <h3 className="mb-5">Log Workout</h3>
       <table className="min-w-full divide-y divide-gray-200">
         <TableHead />
-        <TableBody exercise={exercise} />
+        <TableBody exercise={String(exercise)} />
       </table>
       <button
         className="bg-black text-white m-10 p-2 rounded"

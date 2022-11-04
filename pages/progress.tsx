@@ -1,11 +1,12 @@
 import Layout from "../components/layout";
 import Chart from "../components/charts/chart";
+import { prisma } from "./api/db";
+import { Exercise } from "@prisma/client";
 
-const Progress = () => {
-  const averages = [
-    { name: "Bench Press", id: 1, backgroundColor: "red" },
-    { name: "Pull Ups", id: 2, backgroundColor: "black" },
-  ];
+const Progress = ({ exercises }: { exercises: Exercise[] }) => {
+  const averages = exercises.map((exercise) => {
+    return { ...exercise, backgroundColor: "red" };
+  });
   return (
     <>
       <Layout element={"progress"}>
@@ -25,5 +26,20 @@ const Progress = () => {
     </>
   );
 };
+
+export async function getStaticProps({}) {
+  const exercises = await prisma.exercise.findMany({
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+
+  return {
+    props: {
+      exercises,
+    },
+  };
+}
 
 export default Progress;
