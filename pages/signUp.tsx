@@ -52,7 +52,7 @@ export default function SignUp() {
       signUpWithEmail(values.email, values.password)
         .then(() => {
           axios
-            .post("http://localhost:3000/api/user", values)
+            .post("/api/user", values)
             .then((res) => {
               dispatch(getUser(res.data));
             })
