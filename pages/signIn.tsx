@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { useFormik } from "formik";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { ToastContainer, toast } from "react-toastify";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_DATABASE_NAME!,
@@ -13,7 +14,7 @@ async function signInWithEmail(email: string, password: string) {
     const { user, error } = await supabase.auth.signIn({ email, password });
     if (error) throw error;
   } catch (err) {
-    console.log(err);
+    throw err;
   }
 }
 
@@ -26,9 +27,21 @@ export default function SignIn() {
       password: "",
     },
     onSubmit: (values) => {
-      signInWithEmail(values.email, values.password).then(() => {
-        router.push("/home");
-      });
+      const alert = toast.loading("Please wait...");
+      signInWithEmail(values.email, values.password)
+        .then(() => {
+          router.push("/home");
+        })
+        .catch((err) => {
+          toast.update(alert, {
+            render: `${err.message}`,
+            type: "error",
+            isLoading: false,
+            hideProgressBar: true,
+            autoClose: 2000,
+          });
+          console.log(err);
+        });
     },
   });
   return (
@@ -124,6 +137,7 @@ export default function SignIn() {
             alt=""
           />
         </div>
+        <ToastContainer />
       </div>
     </div>
   );

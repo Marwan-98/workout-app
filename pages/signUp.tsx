@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useAppSelector } from "../redux/hooks";
 import { useDispatch } from "react-redux";
 import { getUser } from "../redux/slices/userSlice";
+import { ToastContainer, toast } from "react-toastify";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_DATABASE_NAME!,
@@ -17,7 +18,6 @@ const supabase = createClient(
 export default function SignUp() {
   const router = useRouter();
   const [visible, setVisible] = useState(false);
-  const [error, setError] = useState("");
   const user = useAppSelector((state) => state.user.user);
   const dispatch = useDispatch();
 
@@ -27,13 +27,6 @@ export default function SignUp() {
       if (error) throw error;
       return user;
     } catch (error) {
-      let message = "Unknown Error";
-      if (error instanceof Error) message = error.message;
-      setError(message);
-      setVisible(true);
-      setTimeout(() => {
-        setVisible(false);
-      }, 3000);
       throw error;
     }
   }
@@ -49,6 +42,7 @@ export default function SignUp() {
       age: "",
     },
     onSubmit: (values) => {
+      const alert = toast.loading("Please wait...");
       signUpWithEmail(values.email, values.password)
         .then(() => {
           axios
@@ -58,7 +52,16 @@ export default function SignUp() {
             })
             .finally(() => router.push("/home"));
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          toast.update(alert, {
+            render: `${err.message}`,
+            type: "error",
+            isLoading: false,
+            hideProgressBar: true,
+            autoClose: 2000,
+          });
+          console.log(err);
+        });
     },
   });
   return (
@@ -67,23 +70,7 @@ export default function SignUp() {
         className={`rounded-md bg-red-50 p-4 fixed top-10 left-10 ${
           visible ? "visible" : "invisible"
         }`}
-      >
-        <div className="flex">
-          <div className="flex-shrink-0">
-            <XCircleIcon className="h-5 w-5 text-red-400" aria-hidden="true" />
-          </div>
-          <div className="ml-3">
-            <h3 className="text-sm font-medium text-red-800">
-              There was an error with your submission
-            </h3>
-            <div className="mt-2 text-sm text-red-700">
-              <ul role="list" className="list-disc space-y-1 pl-5">
-                <li>{error}</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
+      ></div>
       <div className="flex min-h-full">
         <div className="flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
           <div className="mx-auto w-full max-w-sm lg:w-96">
@@ -263,6 +250,7 @@ export default function SignUp() {
             alt=""
           />
         </div>
+        <ToastContainer />
       </div>
     </div>
   );
